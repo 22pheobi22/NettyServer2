@@ -114,7 +114,13 @@ public class ServerDataManager {
 		if ("1".equals(share.getType())) {
 			share.setContent(value);
 		} else if ("n".equals(share.getType())) {
-			share.add(value);
+			if(null!=value){
+				String[] values = value.split("##");
+				for (String v : values) {
+					share.add(v);
+				}
+			}
+			
 		}
 	}
 	
