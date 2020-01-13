@@ -13,8 +13,8 @@ public class ReadConf {
      * 以行为单位读取文件，常用于读面向行的格式化文件
      */
 	public void readFileByLines() {
-//		String fileName = System.getProperty("user.dir")+"/bin/conf/setting.conf";
-		String fileName = System.getProperty("user.dir")+"/conf/setting.conf";
+		String fileName = System.getProperty("user.dir")+"/bin/conf/setting.conf";
+//		String fileName = System.getProperty("user.dir")+"/conf/setting.conf";
 
 		this.readFileByLines(fileName);
 	}

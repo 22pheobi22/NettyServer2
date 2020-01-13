@@ -16,6 +16,7 @@ import com.sa.service.manager.LoginManager;
 import com.sa.service.manager.SystemLoginManager;
 import com.sa.service.server.ServerLogin;
 import com.sa.service.sys.SysLoginReq;
+import com.sa.util.StringUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,14 +33,14 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
-//		System.out.println("channelActive:"+ctx.channel().remoteAddress());
+		System.out.println("channelActive:"+ctx.channel().remoteAddress());
 		ServerDataPool.TEMP_CONN_MAP.put(ctx, new ChannelExtend());
 	}
 
 	@Override
 	public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 		try {
-			//System.out.println("channelRead:"+context.channel().remoteAddress());
+			System.out.println("channelRead:"+context.channel().remoteAddress());
 			Packet packet = (Packet) msg;
 			if (packet.getPacketType() == PacketType.ServerLogin) {
 				ServerManager.INSTANCE.log(packet);
@@ -61,7 +62,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
-		String log = "TCP closed...";
+		String strIp = ctx.channel().remoteAddress().toString();
+		String log = "TCP closed..."+strIp;
 		
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
@@ -78,6 +80,12 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		}
 		
 		System.err.println(log);
+		//若是中心客户端 给出特别日志
+		/*if(){
+			System.err.println(log);	
+		}else{
+			
+		}*/
 
 //		ServerManager.INSTANCE.ungisterUserContext(ctx);
 		if(null!=ctx){
@@ -87,7 +95,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		String log = "channelInactive客户端关闭1";
+		String strIp = ctx.channel().remoteAddress().toString();
+		String log = "channelInactive客户端"+strIp+"关闭1";
 
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
@@ -104,14 +113,21 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		}
 
 		System.err.println(log);
+		//若是中心客户端 给出特别日志
+		/*if(){
+			System.err.println(log);	
+		}else{
+			
+		}*/
+		
 //		ServerManager.INSTANCE.ungisterUserContext(ctx);
 	}
 
 	public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise)
 			throws Exception {
 //		ServerManager.INSTANCE.ungisterUserContext(ctx);
-		
-		String log = "disconnect客户端关闭2";
+		String strIp = ctx.channel().remoteAddress().toString();
+		String log = "disconnect客户端"+strIp+"关闭2";
 		
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
@@ -130,6 +146,12 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 			ctx.disconnect(promise);	
 		}
 		System.err.println(log);
+		//若是中心客户端 给出特别日志
+		/*if(){
+			System.err.println(log);	
+		}else{
+			
+		}*/
 	}
 
 	@Override
@@ -145,37 +167,53 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 //		clientLoginOut.setFromUserId(userId);
 //		clientLoginOut.setOption(255, "deleted");
 //		clientLoginOut.execPacket();
-		
-		System.err.println("exceptionCaught:业务逻辑出错");
+		String strIp = ctx.channel().remoteAddress().toString();
+		System.err.println("exceptionCaught:"+strIp+"业务逻辑出错");
 		cause.printStackTrace();
 
 		Channel channel = ctx.channel();
 		if (cause instanceof Exception && channel.isActive()) {
 			System.err.println("simple client " + channel.remoteAddress() + " 异常");
+			//Thread.sleep(5000);
 			ctx.close();	
 		}
+		
+		//若是中心客户端 给出特别日志
+		/*if(){
+			System.err.println(log);	
+		}else{
+			
+		}*/
 	}
 
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
+		String strIp = ctx.channel().remoteAddress().toString();
+
 		// 心跳包检测读超时
 		if (evt instanceof IdleStateEvent) {
 			IdleStateEvent e = (IdleStateEvent) evt;
 			if (e.state() == IdleState.READER_IDLE) {
-				System.err.println("客户端读超时");
+				System.err.println("客户端"+strIp+"读超时");
 				int overtimeTimes = clientOvertimeMap.get(ctx);
 				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
 					ServerManager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
 					addUserOvertime(ctx);
 				} else {
-					String log = "客户端超时踢下线";
+					String log = "客户端"+strIp+"超时踢下线";
 					ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 					if (null != ce) {
 						log += "("+ce.getUserId()+")";
 					}
 					
 					System.err.println(log);
+					//若是中心客户端 给出特别日志
+					/*if(){
+						System.err.println(log);	
+					}else{
+						
+					}*/
 					ServerManager.INSTANCE.ungisterUserContext(ctx);
 					
 				}

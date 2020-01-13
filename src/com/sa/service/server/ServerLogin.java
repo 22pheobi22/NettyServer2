@@ -9,6 +9,10 @@ import com.sa.service.client.ClientMsgReceipt;
 
 public class ServerLogin extends Packet {
 	public ServerLogin(){}
+	
+	public ServerLogin(Integer transactionId, String roomId, String fromUserId, String toUserId, Integer status){
+		super(transactionId, roomId, fromUserId, toUserId, status);
+	}
 
 	@Override
 	public PacketType getPacketType() {
