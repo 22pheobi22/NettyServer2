@@ -234,6 +234,8 @@ public enum ServerManager {
 //		this.log(pact);
 
 		// 将数据包写进通道并发送
+		//targetContext.close();
+		//targetContext=null;
 		writeAndFlush(targetContext, pact);
 	}
 
