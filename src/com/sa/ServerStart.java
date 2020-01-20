@@ -1,6 +1,7 @@
 package com.sa;
 
 import com.sa.base.ConfManager;
+import com.sa.client.ChatClient;
 import com.sa.thread.AutoCancelTempConnect;
 import com.sa.thread.MongoLogSync;
 import com.sa.thread.RoomCancelSync;
@@ -31,9 +32,9 @@ public class ServerStart {
 			new Thread(new ClientSocketServcer(ConfManager.getCenterPort())).start();
 		}*/
 
+
 		startNetty();
 	}
-
 	private static void initConf() {
 		new ReadConf().readFileByLines();
 	}
