@@ -26,7 +26,6 @@ public enum LoginManager {
 	public void login(ChannelHandlerContext context, ServerLogin loginPact) {
 		String strIp = context.channel().remoteAddress().toString();
 		strIp = StringUtil.subStringIp(strIp);
-
 		int code = 0;
 		String msg = "成功";
 		/** 获取 临时通道 状态*/
@@ -66,25 +65,27 @@ public enum LoginManager {
 		}
 
 		/** 如果 有 中心 */
-		if (ConfManager.getIsCenter()) {
-			//转发中心前重置role
-			//loginPact.setOption(2, userRole);
+		if (ConfManager.getIsCenter()&&!ConfManager.getCenterId().equals(loginPact.getFromUserId())) {
 			SUniqueLogon uniqueLogon = new SUniqueLogon(loginPact.getPacketHead());
 			uniqueLogon.setOptions(loginPact.getOptions());
+			
 			uniqueLogon.setOption(254, "uniqueLogon");
-			uniqueLogon.setRemoteIp(strIp);//設置本服務器IP
+			uniqueLogon.setOption(100, strIp);
+			
+			//uniqueLogon.setRemoteIp(strIp);//設置本服務器IP
 			/** 转发 登录信息 上行 到中心 */
 			ServerManager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
-
-			return;
+		}else{
+			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());
+			
+			/** 登录信息 下行 处理 */
+			clientLogin(loginPact, code, msg, role, context);
 		}
 
-		/** 登录信息 下行 处理 */
-		clientLogin(loginPact, code, msg, role, context);
+	}
 
-		/** 删除 缓存通道 */
-		ServerDataPool.TEMP_CONN_MAP2.remove(loginPact.getFromUserId());
-		ServerDataPool.TEMP_CONN_MAP.remove(context);
+	private void doLogin(String userId,ChannelHandlerContext context, int channelType) {
+		ServerManager.INSTANCE.addOnlineContext(userId, context, channelType);
 	}
 
 	private Map<String, Object> doRoleValidate(HashSet<String> userRole, String role) {

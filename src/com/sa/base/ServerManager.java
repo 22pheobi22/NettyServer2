@@ -234,6 +234,8 @@ public enum ServerManager {
 //		this.log(pact);
 
 		// 将数据包写进通道并发送
+		//targetContext.close();
+		//targetContext=null;
 		writeAndFlush(targetContext, pact);
 	}
 
@@ -263,7 +265,7 @@ public enum ServerManager {
 	}
 
 	/**
-	 * 登录、注册、上线、绑定
+	 * 登录、注册、上线、绑定--非中心
 	 */
 	public void addOnlineContext(String roomId, String userId, String name, String icon, String agoraId, HashSet<String> userRole, boolean notSpeak, ChannelHandlerContext context, int channelType){
 		// 如果通道为空 则抛出空指针错误
@@ -292,9 +294,9 @@ public enum ServerManager {
 
 	}
 	/**
-	 * 登录、注册、上线、绑定
+	 * 登录、注册、上线、绑定--中心
 	 */
-	public void addOnlineContext(String roomId, String userId, String name, String icon, HashSet<String> userRole, boolean notSpeak, ChannelHandlerContext context, int channelType){
+	public void addOnlineContext(String userId,ChannelHandlerContext context, int channelType){
 		// 如果通道为空 则抛出空指针错误
 		if(context == null){
 			// 抛出通道为空的异常
@@ -305,14 +307,10 @@ public enum ServerManager {
 		ServerDataPool.USER_CHANNEL_MAP.put(userId,context);
 		// 缓存 通道-用户信息
 		ServerDataPool.CHANNEL_USER_MAP.put(context, new ChannelExtend(userId, channelType));
-		
-//		System.out.println(ServerDataPool.USER_CHANNEL_MAP.size() + "U C" + ServerDataPool.CHANNEL_USER_MAP.size());
 
-		// 如果用户不是中心
-		if (!ConfManager.getCenterId().equals(userId)) {
-			// 将用户信息缓存
-			ServerDataPool.serverDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
-		}
+		/** 删除 缓存通道 */
+		ServerDataPool.TEMP_CONN_MAP2.remove(userId);
+		ServerDataPool.TEMP_CONN_MAP.remove(context);
 	}
 
 	/**
