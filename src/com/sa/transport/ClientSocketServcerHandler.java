@@ -41,7 +41,9 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 		try {
 			System.out.println("channelRead:"+context.channel().remoteAddress());
+			String strIp = StringUtil.subStringIp(context.channel().remoteAddress().toString());
 			Packet packet = (Packet) msg;
+			packet.setRemoteIp(strIp);
 			if (packet.getPacketType() == PacketType.ServerLogin) {
 				ServerManager.INSTANCE.log(packet);
 				LoginManager.INSTANCE.login(context, (ServerLogin) packet);

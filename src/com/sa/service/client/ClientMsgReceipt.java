@@ -38,7 +38,7 @@ public class ClientMsgReceipt extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

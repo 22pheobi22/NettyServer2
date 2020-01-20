@@ -3,14 +3,19 @@ package com.sa.base;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sa.util.JedisUtil;
 import com.sa.util.StringUtil;
 
 public class ConfManager {
 	/** 运行配置 */
 	public static Map<String, String> CONF_MAP = new HashMap<>();
-
+	
+	public static JedisUtil jedisUtil =new JedisUtil();
+	
+	private static String CENTER_ROLE_INFO_KEY = "centerRoleInfo";
 	/** 服务器端口 */
 	public static int getClientSoketServerPort() {
+		
 		String strPort = CONF_MAP.get("clientsoket.server.port");
 
 		strPort = null==strPort || "".equals(strPort) ? "8080" : strPort;
@@ -61,13 +66,20 @@ public class ConfManager {
 	}
 
 	/** 中心IP */
+	public static String getCenterIPAndPort() {
+		return jedisUtil.getHash(CENTER_ROLE_INFO_KEY, "master");
+	}
+	
+	/** 中心host */
 	public static String getCenterIp() {
-		String strCenterIp = CONF_MAP.get("center.ip");
+		String strCenterIp = jedisUtil.getHash(CENTER_ROLE_INFO_KEY, "master");
 
 		if (StringUtil.isEmpty(strCenterIp)) {
 			strCenterIp = "192.168.1.105";
+		}else {
+			strCenterIp =strCenterIp.split(":")[0];
 		}
-
+		
 		return strCenterIp;
 	}
 
