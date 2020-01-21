@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.TreeMap;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.net.Packet;
@@ -39,7 +40,7 @@ public class ClientLoginOut extends Packet {
 				if(!ConfManager.getCenterId().equals(this.getFromUserId())){
 					this.setToUserId("0");
 					//轉發到中心只做業務處理 不再往服務器下發消息
-					ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_S);
+					Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_S);
 				}
 				
 				ChannelHandlerContext ctx =  ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());

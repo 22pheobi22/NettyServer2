@@ -64,6 +64,17 @@ public class ConfManager {
 
 		return Boolean.parseBoolean(strIsCenter);
 	}
+	
+	/** 是否使用redis*/
+	public static Boolean getIsRedis() {
+		String strIsCenter = CONF_MAP.get("is.redis");
+
+		if (StringUtil.isEmpty(strIsCenter)) {
+			strIsCenter = "false";
+		}
+
+		return Boolean.parseBoolean(strIsCenter);
+	}
 
 	/** 中心IP */
 	public static String getCenterIPAndPort() {
