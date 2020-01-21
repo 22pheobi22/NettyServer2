@@ -44,7 +44,7 @@ public class ServerRequestbShareGet extends Packet {
 				for (String rId : roomIds) {
 					if ("1".equals(op2)) {
 						/** 根据房间id和选项1 获取 共享信息 */
-						Object share = ServerDataPool.serverDataManager.getShare(rId, op1);
+						Object share = ServerDataPool.dataManager.getShare(rId, op1);
 						/** 设置共享 */
 						/** 实例化获取共享类型 下行 并赋值 */
 						ClientResponebShareGet clientResponebShareGet = new ClientResponebShareGet(this.getPacketHead());
@@ -54,7 +54,7 @@ public class ServerRequestbShareGet extends Packet {
 						/** 执行 */
 						clientResponebShareGet.execPacket();
 					} else if ("n".equals(op2)) {
-						List<Object> list = ServerDataPool.serverDataManager.getShareList(rId, op1);
+						List<Object> list = ServerDataPool.dataManager.getShareList(rId, op1);
 						/** 设置共享 */
 						/** 实例化获取共享类型 下行 并赋值 */
 						if (null != list) {

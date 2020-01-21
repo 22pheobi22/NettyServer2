@@ -67,7 +67,7 @@ public class ServerRequestcGag extends Packet {
 	
 	private void one(String userId,String roomId) {
 		/** 移除目标用户禁言*/
-		People people = ServerDataPool.serverDataManager.notSpeakAuth(roomId, userId);
+		People people = ServerDataPool.dataManager.notSpeakAuth(roomId, userId);
 		/** 如果目标用户为空*/
 		if (null != people) {
 			/** 重写返回值*/
@@ -88,7 +88,7 @@ public class ServerRequestcGag extends Packet {
 	}
 
 	private void all(String roomId) {
-		Room room = ServerDataPool.serverDataManager.getRoom(roomId);
+		Room room = ServerDataPool.dataManager.getRoom(roomId);
 		
 		for (Map.Entry<String, People> entry : room.getPeoples().entrySet()) {
 			one(entry.getKey(),roomId);
@@ -103,7 +103,7 @@ public class ServerRequestcGag extends Packet {
 //		if (0 == ((Integer) result.get("code"))) {
 //			/** 根据房间id和目标用户id获取用户信息*/
 //			String userId= this.getToUserId();
-//			People people =ServerDataPool.serverDataManager.notSpeakAuth(this.getRoomId(), this.getToUserId());
+//			People people =ServerDataPool.dataManager.notSpeakAuth(this.getRoomId(), this.getToUserId());
 //			/** 如果人员信息为空*/
 //			if (null != people) {
 //				Map<String, Object> result2 = new HashMap<>();

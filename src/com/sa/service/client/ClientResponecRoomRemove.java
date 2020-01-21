@@ -35,9 +35,9 @@ public class ClientResponecRoomRemove extends Packet {
 			ServerManager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
 
 			/** 删除房间消息缓存*/
-			ServerDataPool.serverDataManager.cleanLogs(this.getRoomId());
+			ServerDataPool.dataManager.cleanLogs(this.getRoomId());
 			/** 删除房间缓存*/
-			ServerDataPool.serverDataManager.removeRoom(this.getRoomId());
+			ServerDataPool.dataManager.removeRoom(this.getRoomId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

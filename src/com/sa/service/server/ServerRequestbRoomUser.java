@@ -48,7 +48,7 @@ public class ServerRequestbRoomUser extends Packet {
 			if (null != roomIds && roomIds.length > 0) {
 				for (String rId : roomIds) {
 					/** 根据房间id获取房间内用户信息 */
-					Map<String, People> hm = ServerDataPool.serverDataManager.getRoomUesrs(rId);
+					Map<String, People> hm = ServerDataPool.dataManager.getRoomUesrs(rId);
 
 					int index = 0;
 					String json = "[";

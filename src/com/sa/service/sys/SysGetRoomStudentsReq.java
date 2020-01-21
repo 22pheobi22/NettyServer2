@@ -36,7 +36,7 @@ public class SysGetRoomStudentsReq extends Packet {
 			len = Integer.parseInt((String) this.getOption(1));
 		}
 
-		Map<String, People> map = ServerDataPool.serverDataManager.getRoomUesrs((String) this.getOption(2));
+		Map<String, People> map = ServerDataPool.dataManager.getRoomUesrs((String) this.getOption(2));
 
 		if (null == map || 0 == map.size()) {
 			ClientMsgReceipt clientMsgReceipt = new ClientMsgReceipt();

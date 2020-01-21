@@ -15,13 +15,13 @@ public class RoomCancelSync implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
-			Map<String, Integer> roomInfo = ServerDataPool.serverDataManager.getRoomInfo();
+			Map<String, Integer> roomInfo = ServerDataPool.dataManager.getRoomInfo();
 			for (Map.Entry<String, Integer> room : roomInfo.entrySet()) {
 				String roomId = room.getKey();	// 房间id
 //				int personNum = room.getValue();// 房间人数
 //				if (0 == personNum) {			// 如果房间人数是0
 					// 空闲时长，每个数代表5分钟
-					int freeNum = ServerDataPool.serverDataManager.getFreeRoom(roomId);
+					int freeNum = ServerDataPool.dataManager.getFreeRoom(roomId);
 					if (freeNum >= 18) {
 //						System.out.println("RoomCancelSync roomId = " + roomId);
 						Boolean closeLession = closeLession(roomId);
@@ -29,18 +29,18 @@ public class RoomCancelSync implements Runnable {
 							System.out.println("RoomCancelSync roomId = " + roomId + "remove");
 							// 销毁房间
 							/** 删除 房间 消息 缓存 */
-							ServerDataPool.serverDataManager.cleanLogs(roomId);
+							ServerDataPool.dataManager.cleanLogs(roomId);
 							/** 删除 房间 缓存 */
-							ServerDataPool.serverDataManager.removeRoom(roomId);
+							ServerDataPool.dataManager.removeRoom(roomId);
 							/** 删除 房间 空闲 计数 缓存 */
-							ServerDataPool.serverDataManager.cancelFreeRoom(roomId);
+							ServerDataPool.dataManager.cancelFreeRoom(roomId);
 						}
 					} else {
 						// 空余时长➕1
-						ServerDataPool.serverDataManager.setFreeRoom(roomId,freeNum);
+						ServerDataPool.dataManager.setFreeRoom(roomId,freeNum);
 					}
 //				} else {
-//					ServerDataPool.serverDataManager.cancelFreeRoom(roomId);
+//					ServerDataPool.dataManager.cancelFreeRoom(roomId);
 //				}
 			}
 			try {
@@ -55,7 +55,7 @@ public class RoomCancelSync implements Runnable {
 	private Boolean closeLession(String roomId) {
 		String statNum = null;
 
-		Room room = ServerDataPool.serverDataManager.getRoom(roomId);
+		Room room = ServerDataPool.dataManager.getRoom(roomId);
 		Map<String, Share> shareMap = room.getShare();
 		if (null != shareMap) {
 			Share share = shareMap.get("starcount");

@@ -43,7 +43,8 @@ public class ClientResponebRoomUser extends Packet {
 		try {
 			/** 如果 用户增量 不为空*/
 			if (null != this.getOption(11)) {
-				People people = ServerDataPool.serverDataManager.getRoomUesr(this.getRoomId(), this.getFromUserId());
+				People people = ServerDataPool.dataManager.getRoomUesr(this.getRoomId(), this.getFromUserId());
+				//People people = ServerDataPool.serverDataManager.getRoomUesr(this.getRoomId(), this.getFromUserId());
 				if (null != people)
 					toJson(people);
 				/** 向房间内全员发送消息*/

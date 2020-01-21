@@ -16,7 +16,11 @@ public class ServerDataPool {
 	public static Map<ChannelHandlerContext, ChannelExtend> CHANNEL_USER_MAP  = new ConcurrentHashMap<>();
 
 	/** 房间信息及相关处理*/
-	public static ServerDataManager serverDataManager = new ServerDataManager();
+	//public static ServerDataManager serverDataManager = new ServerDataManager();
+	/** 房间信息及相关处理*/
+	//public static RedisDataManager redisDataManager = new RedisDataManager();
+	/** 房间信息及相关处理*/
+	public static DataManager dataManager = new DataManager();
 
 	/** 临时连接 */
 	public static Map<ChannelHandlerContext, ChannelExtend> TEMP_CONN_MAP = new ConcurrentHashMap<>();

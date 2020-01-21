@@ -57,7 +57,7 @@ public class ServerRequestbRoom extends Packet {
 			} else {
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
-						ServerDataPool.serverDataManager.setRoomChats(rId,
+						ServerDataPool.dataManager.setRoomChats(rId,
 								System.currentTimeMillis() + "," + this.getTransactionId(), this.getFromUserId(),
 								(String) this.getOption(1));
 					}

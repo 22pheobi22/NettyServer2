@@ -51,9 +51,9 @@ public class ClientResponecBegin extends Packet {
 		/** 获取房间禁言角色*/
 		HashSet<String> roomRoles = getRole(this.getOption(1));
 		/** 设置房间角色*/
-		ServerDataPool.serverDataManager.setRoomRole(this.getRoomId(), roomRoles, ConfManager.getTalkEnable());
+		ServerDataPool.dataManager.setRoomRole(this.getRoomId(), roomRoles, ConfManager.getTalkEnable());
 		/** 获取房间内用户*/
-		Map<String, People> hm = ServerDataPool.serverDataManager.getRoomUesrs(this.getRoomId());
+		Map<String, People> hm = ServerDataPool.dataManager.getRoomUesrs(this.getRoomId());
 
 		try {
 			/** 遍历用户信息 */

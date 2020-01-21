@@ -31,7 +31,7 @@ public class ServerRequestbRoomChat extends Packet {
 			String[] roomIds = this.getRoomId().split(",");
 			if (null != roomIds && roomIds.length > 0) {
 				for (String rId : roomIds) {
-					List<Logs> logList = ServerDataPool.serverDataManager.getRoomChats(rId, (String) this.getOption(1), Integer.parseInt(this.getOption(2).toString()));
+					List<Logs> logList = ServerDataPool.dataManager.getRoomChats(rId, (String) this.getOption(1), Integer.parseInt(this.getOption(2).toString()));
 
 					String json = "[";
 					/** 遍历聊天记录*/

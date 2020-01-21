@@ -63,7 +63,7 @@ public class ServerRequestcNotGag extends Packet {
 
 	private void one(String userId,String roomId) {
 		/** 移除目标用户禁言 */
-		People people = ServerDataPool.serverDataManager.speakAuth(roomId, userId);
+		People people = ServerDataPool.dataManager.speakAuth(roomId, userId);
 		/** 如果目标用户为空 */
 		if (null != people) {
 			/** 重写返回值 */
@@ -84,7 +84,7 @@ public class ServerRequestcNotGag extends Packet {
 	}
 
 	private void all(String roomId) {
-		Room room = ServerDataPool.serverDataManager.getRoom(roomId);
+		Room room = ServerDataPool.dataManager.getRoom(roomId);
 
 		for (Map.Entry<String, People> entry : room.getPeoples().entrySet()) {
 			one(entry.getKey(),roomId);
