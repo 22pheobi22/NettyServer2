@@ -51,7 +51,7 @@ public class ClientResponecAgreeApplyAuth extends Packet {
 			 * option 3 : 操作 (+：添加 -:删除)
 			 * option 4 : 多人或单人权限标识（1、n）
 			 */
-			ServerDataPool.serverDataManager.setRoomUserDefAuth(this.getRoomId(),
+			ServerDataPool.dataManager.setRoomUserDefAuth(this.getRoomId(),
 					this.getToUserId(),
 					(String) this.getOption(1),
 					(String) this.getOption(3),

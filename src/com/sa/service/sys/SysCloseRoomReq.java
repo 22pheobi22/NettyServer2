@@ -25,11 +25,11 @@ public class SysCloseRoomReq extends Packet {
 	public void execPacket() {
 		String roomId = (String) this.getOption(1);
 		/** 删除 房间 消息 缓存 */
-		ServerDataPool.serverDataManager.cleanLogs(roomId);
+		ServerDataPool.dataManager.cleanLogs(roomId);
 		/** 删除 房间 缓存 */
-		ServerDataPool.serverDataManager.removeRoom(roomId);
+		ServerDataPool.dataManager.removeRoom(roomId);
 		/** 删除 房间 空闲 计数 缓存 */
-		ServerDataPool.serverDataManager.cancelFreeRoom(roomId);
+		ServerDataPool.dataManager.cancelFreeRoom(roomId);
 
 		SysCloseRoomRes sysCloseRoomRes = new SysCloseRoomRes();
 		sysCloseRoomRes.setPacketHead(this.getPacketHead());

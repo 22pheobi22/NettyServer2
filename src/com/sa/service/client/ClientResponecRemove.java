@@ -37,7 +37,7 @@ public class ClientResponecRemove extends Packet {
 		/** 发送被迫下线通知*/
 		offline();
 		/** 移除用户*/
-		ServerDataPool.serverDataManager.removeRoomUser(this.getRoomId(), this.getToUserId());
+		ServerDataPool.dataManager.removeRoomUser(this.getRoomId(), this.getToUserId());
 		/** 通知被踢用户*/
 		noticeUser();
 	}

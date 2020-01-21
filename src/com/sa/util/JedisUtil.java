@@ -1,6 +1,7 @@
 package com.sa.util;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Tuple;
 import redis.clients.jedis.params.SetParams;
 
@@ -35,6 +38,27 @@ public class JedisUtil {
         }
     }
 
+    //模糊查询key
+    public Set<String> scanKeys(String key){
+    	Jedis jedis = jedisPool.getJedis();
+    	Set<String> list = new HashSet<>();
+    	String cursor = ScanParams.SCAN_POINTER_START;
+        boolean cycleIsFinished = false;
+        
+		ScanParams scanParams = new ScanParams();
+		scanParams.count(5000);
+		scanParams.match(key + "*");
+		while (!cycleIsFinished) {
+			ScanResult<String> scanResult = jedis.scan(cursor, scanParams);
+			list.addAll(scanResult.getResult());
+			cursor = scanResult.getCursor();
+			if(cursor.equals("0")){
+				cycleIsFinished = true;
+			}
+		}
+    	return list;
+    }
+    
     public boolean setStringEx(String key, int seconds, String value) {
         Jedis jedis = jedisPool.getJedis();
         try {

@@ -46,7 +46,7 @@ public class ServerRequestbRoomTeacher extends Packet {
 			ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 		} else {
 			/** 根据房间id获取房间内普通教师信息 */
-			Map<String, People> hm = ServerDataPool.serverDataManager.getRoomTeachers(this.getRoomId());
+			Map<String, People> hm = ServerDataPool.dataManager.getRoomTeachers(this.getRoomId());
 
 			int index = 0;
 			String json = "[";

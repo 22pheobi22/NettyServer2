@@ -7,6 +7,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.base.element.ChannelExtend;
@@ -146,7 +147,7 @@ public enum LoginManager {
 			// ServerManager.INSTANCE.sendPacketTo2(cl, context,
 			// Constant.CONSOLE_CODE_S);
 			// } else {
-			ServerManager.INSTANCE.sendPacketTo(cl, context, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketTo(cl, context, Constant.CONSOLE_CODE_S);
 			// }
 		} catch (Exception e) {
 			e.printStackTrace();

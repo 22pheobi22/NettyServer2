@@ -64,7 +64,7 @@ public class ServerRequestcRemove extends Packet {
 			if (null != roomIds && roomIds.length > 0) {
 				for (String rId : roomIds) {
 					/** 获取目标用户信息*/
-					People people = ServerDataPool.serverDataManager.getRoomUesr(rId, this.getToUserId());
+					People people = ServerDataPool.dataManager.getRoomUesr(rId, this.getToUserId());
 					/** 如果用户信息不为空*/
 					if (null != people)
 						/** 设置删除成功*/

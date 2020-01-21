@@ -33,9 +33,9 @@ public class SysChangeSpeakStatusReq extends Packet {
 			String[] arr = stuIds.split(",");
 			for (String tmp : arr) {
 				if ("0".equals(auth)) {
-					People people = ServerDataPool.serverDataManager.notSpeakAuth(roomId, tmp);
+					People people = ServerDataPool.dataManager.notSpeakAuth(roomId, tmp);
 				} else if ("1".equals(auth)) {
-					People people = ServerDataPool.serverDataManager.speakAuth(roomId, tmp);
+					People people = ServerDataPool.dataManager.speakAuth(roomId, tmp);
 					msg = "解除禁言成功";
 				}
 			}

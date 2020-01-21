@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.base.element.ChannelExtend;
@@ -69,7 +70,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
-			String roomId = ServerDataPool.serverDataManager.getUserRoomNo(ce.getUserId());
+			String roomId = ServerDataPool.dataManager.getUserRoomNo(ce.getUserId());
 			
 			log += "["+roomId+"]("+ce.getUserId()+")";
 
@@ -102,7 +103,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
-			String roomId = ServerDataPool.serverDataManager.getUserRoomNo(ce.getUserId());
+			String roomId = ServerDataPool.dataManager.getUserRoomNo(ce.getUserId());
+			//String roomId = ServerDataPool.dataManager.getUserRoomNo(ce.getUserId());
 
 			log += "["+roomId+"]("+ce.getUserId()+")";
 			
@@ -133,7 +135,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		
 		ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 		if (null != ce && null != ce.getUserId()) {
-			String roomId = ServerDataPool.serverDataManager.getUserRoomNo(ce.getUserId());
+			String roomId = ServerDataPool.dataManager.getUserRoomNo(ce.getUserId());
 
 			log += "["+roomId+"]("+ce.getUserId()+")";
 
@@ -162,7 +164,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 //		ServerManager.INSTANCE.ungisterUserContext(ctx);
 		
 //		String userId = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
-//		String roomId = ServerDataPool.serverDataManager.getUserRoomNo(userId);
+//		String roomId = ServerDataPool.dataManager.getUserRoomNo(userId);
 //
 //		ClientLoginOut clientLoginOut = new ClientLoginOut();
 //		clientLoginOut.setRoomId(roomId);
@@ -200,7 +202,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 				System.err.println("客户端"+strIp+"读超时");
 				int overtimeTimes = clientOvertimeMap.get(ctx);
 				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
-					ServerManager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
+					Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
 					addUserOvertime(ctx);
 				} else {
 					String log = "客户端"+strIp+"超时踢下线";

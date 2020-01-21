@@ -34,7 +34,7 @@ public class SysGetRoomsReq extends Packet {
 			len = Integer.parseInt((String) this.getOption(1));
 		}
 
-		Set<String> roomsSet = ServerDataPool.serverDataManager.getRooms();
+		Set<String> roomsSet = ServerDataPool.dataManager.getRooms();
 		String[] rooms = roomsSet.toArray(new String[0]);
 //		String[] rooms = new String[]{"房间00", "房间01", "房间02", "房间03", "房间04","房间05", "房间06", "房间07", "房间08", "房间09",
 //				"房间10", "房间11", "房间12", "房间13", "房间14","房间15", "房间16", "房间17", "房间18", "房间19",

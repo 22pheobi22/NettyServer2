@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.base.element.ChannelExtend;
@@ -164,7 +165,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 			} else {
 				ClientMsgReceipt cmr = new ClientMsgReceipt(packet.getTransactionId(), packet.getRoomId(), packet.getFromUserId(), 10099);
 				cmr.setOption(254, Constant.ERR_CODE_10099);
-				ServerManager.INSTANCE.sendPacketTo(packet, context, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketTo(packet, context, Constant.CONSOLE_CODE_S);
 			}
 		}
 	}
@@ -226,7 +227,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 				System.err.println("客户端读超时");
 				int overtimeTimes = clientOvertimeMap.get(ctx);
 				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
-					ServerManager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
+					Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
 					addUserOvertime(ctx);
 				} else {
 					loginOut(ctx);
@@ -242,7 +243,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 			ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 			if (null != ce) {
 				String fromUserId = ce.getUserId();
-				String roomId = ServerDataPool.serverDataManager.getUserRoomNo(fromUserId);
+				String roomId = ServerDataPool.dataManager.getUserRoomNo(fromUserId);
 
 				ServerLoginOut serverLoginOut = new ServerLoginOut();
 				serverLoginOut.setFromUserId(fromUserId);

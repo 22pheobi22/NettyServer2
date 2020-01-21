@@ -29,7 +29,7 @@ public class ServerLoginOut extends Packet{
 		if (null != roomIds && roomIds.length > 0) {
 			for (String rId : roomIds) {
 				/** 根据房间id 和 发信人id 查询人员信息 */
-				people = ServerDataPool.serverDataManager.getRoomUesr(rId, this.getFromUserId());
+				people = ServerDataPool.dataManager.getRoomUesr(rId, this.getFromUserId());
 				if(Objects.nonNull(people)){
 					break;
 				}

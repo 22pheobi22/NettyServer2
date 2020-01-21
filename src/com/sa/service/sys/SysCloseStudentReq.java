@@ -32,7 +32,7 @@ public class SysCloseStudentReq extends Packet {
 			String[] arr = stuIds.split(",");
 			for (String tmp : arr) {
 				/** 根据房间id 和 发信人id 查询人员信息*/
-				People people = ServerDataPool.serverDataManager.getRoomUesr(roomId, tmp);
+				People people = ServerDataPool.dataManager.getRoomUesr(roomId, tmp);
 				ClientLoginOut clientLoginOut = new ClientLoginOut();
 				clientLoginOut.setPacketHead(this.getPacketHead());
 				clientLoginOut.setRoomId(roomId);

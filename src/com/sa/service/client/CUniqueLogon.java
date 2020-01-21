@@ -17,6 +17,7 @@ package com.sa.service.client;
 import java.util.HashSet;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataManager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
@@ -45,7 +46,7 @@ public class CUniqueLogon extends Packet {
 			mr.setOption(254, Constant.ERR_CODE_10098);
 			/** 发送 消息回执 *///给原通道服务器
 			try {
-				ServerManager.INSTANCE.sendPacketTo(mr, ctx, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketTo(mr, ctx, Constant.CONSOLE_CODE_S);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

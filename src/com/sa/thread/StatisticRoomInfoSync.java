@@ -46,7 +46,7 @@ public class StatisticRoomInfoSync extends BaseSync {
 	public String toJson() {
 		String strJson = "[";
 
-		Map<String, Integer> roomInfo = ServerDataPool.serverDataManager.getRoomInfo();
+		Map<String, Integer> roomInfo = ServerDataPool.dataManager.getRoomInfo();
 
 		strJson += "{\"" + "roomInfo" + "\"" + ":" + JSONObject.toJSONString(roomInfo)+ "}]";
 
