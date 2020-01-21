@@ -75,7 +75,7 @@ public enum LoginManager {
 			
 			//uniqueLogon.setRemoteIp(strIp);//設置本服務器IP
 			/** 转发 登录信息 上行 到中心 */
-			ServerManager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
+			Manager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
 		}else{
 			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());
 			

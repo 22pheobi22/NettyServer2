@@ -37,7 +37,7 @@ public class DataManager {
 
 	/** 获取 房间 空余 时长 */
 	public Integer getFreeRoom(String roomId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getFreeRoom(roomId);
 		}else{
 			return serverDataManager.getFreeRoom(roomId);
@@ -48,7 +48,7 @@ public class DataManager {
 	 * 获取共享
 	 */
 	public Map<String, Share> getShare(String roomId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getShare(roomId);
 		}else{
 			return serverDataManager.getShare(roomId);
@@ -59,7 +59,7 @@ public class DataManager {
 	 * 获取共享
 	 */
 	public Object getShare(String roomId, String key) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getShare(roomId);
 		}else{
 			return serverDataManager.getShare(roomId);
@@ -70,7 +70,7 @@ public class DataManager {
 	 * 获取共享
 	 */
 	public List<Object> getShareList(String roomId, String key) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getShareList(roomId,key);
 		}else{
 			return serverDataManager.getShareList(roomId,key);
@@ -81,7 +81,7 @@ public class DataManager {
 	 * 设置共享
 	 */
 	public void setShare(String roomId, String key, String value, String type) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setShare(roomId, key, value, type);
 		}else{
 			serverDataManager.setShare(roomId, key, value, type);
@@ -92,7 +92,7 @@ public class DataManager {
 	 * 更新共享
 	 */
 	public int updateShare(String roomId, String key, String value, int index) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.updateShare(roomId, key, value, index);
 		}else{
 			return serverDataManager.updateShare(roomId, key, value, index);
@@ -103,7 +103,7 @@ public class DataManager {
 	 * 更新共享
 	 */
 	public int updateShare(String roomId, String key, String oldValue, String newValue) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.updateShare(roomId, key, oldValue, newValue);
 		}else{
 			return serverDataManager.updateShare(roomId, key, oldValue, newValue);
@@ -114,7 +114,7 @@ public class DataManager {
 	 * 移出共享
 	 */
 	public int removeShare(String roomId, String key, String value) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.removeShare(roomId, key, value);
 		}else{
 			return serverDataManager.removeShare(roomId, key, value);
@@ -125,7 +125,7 @@ public class DataManager {
 	 * 移出共享
 	 */
 	public Object removeShare(String roomId, String key) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.removeShare(roomId, key);
 		}else{
 			return serverDataManager.removeShare(roomId, key);
@@ -136,7 +136,7 @@ public class DataManager {
 	 * 移出共享
 	 */
 	public int removeShare(String roomId, String key, int index, int len) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.removeShare(roomId, key, index, len);
 		}else{
 			return serverDataManager.removeShare(roomId, key, index, len);
@@ -144,7 +144,7 @@ public class DataManager {
 	}	
 
 	public void removeShare(String roomId, String key, String[] arr) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.removeShare(roomId, key, arr);
 		}else{
 			serverDataManager.removeShare(roomId, key, arr);
@@ -155,7 +155,7 @@ public class DataManager {
 	 * 注销聊天室
 	 */
 	public Room removeRoom(String roomId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.removeRoom(roomId);
 		}else{
 			return serverDataManager.removeRoom(roomId);
@@ -166,7 +166,7 @@ public class DataManager {
 	 * 移出聊天室
 	 */
 	public synchronized void removeRoomUser(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.removeRoomUser(userId);
 		}else{
 			serverDataManager.removeRoomUser(userId);
@@ -177,7 +177,7 @@ public class DataManager {
 	 * 移出聊天室
 	 */
 	public synchronized People removeRoomUser(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.removeRoomUser(roomId, userId);
 		}else{
 			return serverDataManager.removeRoomUser(roomId, userId);
@@ -188,7 +188,7 @@ public class DataManager {
 	 * 禁言
 	 */
 	public People notSpeakAuth(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.notSpeakAuth(roomId, userId);
 		}else{
 			return serverDataManager.notSpeakAuth(roomId, userId);
@@ -199,7 +199,7 @@ public class DataManager {
 	 * 移出禁言
 	 */
 	public People speakAuth(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.speakAuth(roomId, userId);
 		}else{
 			return serverDataManager.speakAuth(roomId, userId);
@@ -210,7 +210,7 @@ public class DataManager {
 	 * 移出房间权限
 	 */
 	public void removeRoomAuth(String roomId, HashSet<String> roomRoles) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.removeRoomAuth(roomId, roomRoles);
 		}else{
 			serverDataManager.removeRoomAuth(roomId, roomRoles);
@@ -223,7 +223,7 @@ public class DataManager {
 	 * HashSet<String> roomRoles 房间被禁言角色
 	 */
 	public void setRoomRole(String roomId, HashSet<String> roomRoles, boolean notSpeak) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setRoomRole(roomId, roomRoles, notSpeak);
 		}else{
 			serverDataManager.setRoomRole(roomId, roomRoles, notSpeak);
@@ -234,7 +234,7 @@ public class DataManager {
 	 * 获取房间
 	 */
 	public Room getRoom(String roomId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoom(roomId);
 		}else{
 			return serverDataManager.getRoom(roomId);
@@ -242,7 +242,7 @@ public class DataManager {
 	}
 
 	public Set<String> getRooms() {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRooms();
 		}else{
 			return serverDataManager.getRooms();
@@ -255,7 +255,7 @@ public class DataManager {
 	public synchronized void setRoomUser(String roomId, String userId, String name, String icon, String agoraId,
 			HashSet<String> userRole, boolean notSpeak) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
 		}else{
 			serverDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
@@ -268,7 +268,7 @@ public class DataManager {
 	public synchronized void setRoomUser(String roomId, String userId, String name, String icon,
 			HashSet<String> userRole, boolean notSpeak) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
 		}else{
 			serverDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
@@ -280,7 +280,7 @@ public class DataManager {
 	 */
 	public Map<String, People> getRoomUesrs(String roomId) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomUesrs(roomId);
 		}else{
 			return serverDataManager.getRoomUesrs(roomId);
@@ -292,7 +292,7 @@ public class DataManager {
 	 */
 	public Map<String, People> getRoomTeachers(String roomIds) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomTeachers(roomIds);
 		}else{
 			return serverDataManager.getRoomTeachers(roomIds);
@@ -303,7 +303,7 @@ public class DataManager {
 	 * 获取人员
 	 */
 	public People getRoomUesr(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomUesr(roomId, userId);
 		}else{
 			return serverDataManager.getRoomUesr(roomId, userId);
@@ -326,7 +326,7 @@ public class DataManager {
 	 */
 	public void setRoomUserDefAuth(String roomId, String userId, String roleCode, String flag, String num) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
 		}else{
 			serverDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
@@ -337,7 +337,7 @@ public class DataManager {
 	 * 获取人员角色
 	 */
 	public HashSet<String> getRoomUesrRole(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomUesrRole(roomId, userId);
 		}else{
 			return serverDataManager.getRoomUesrRole(roomId, userId);
@@ -349,7 +349,7 @@ public class DataManager {
 	 */
 	public HashMap<String, Integer> getRoomUesrAuth(String roomId, String userId) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomUesrAuth(roomId, userId);
 		}else{
 			return serverDataManager.getRoomUesrAuth(roomId, userId);
@@ -360,7 +360,7 @@ public class DataManager {
 	 * 获取人员存在的房间
 	 */
 	public String getUserRoomNo(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getUserRoomNo(userId);
 		}else{
 			return serverDataManager.getUserRoomNo(userId);
@@ -370,7 +370,7 @@ public class DataManager {
 	/** 获取 房间id 和 每个房间人数 */
 	public Map<String, Integer> getRoomInfo() {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomInfo();
 		}else{
 			return serverDataManager.getRoomInfo();
@@ -383,7 +383,7 @@ public class DataManager {
 	 */
 	public List<Logs> getRoomChats(String roomId, String chatKey, int chatNum) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomChats(roomId, chatKey, chatNum);
 		}else{
 			return serverDataManager.getRoomChats(roomId, chatKey, chatNum);
@@ -393,7 +393,7 @@ public class DataManager {
 	/** 设置消息缓存 */
 	public synchronized void setRoomChats(String roomId, String chatKey, String userId, String msg) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setRoomChats(roomId, chatKey, userId, msg);
 		}else{
 			serverDataManager.setRoomChats(roomId, chatKey, userId, msg);
@@ -403,7 +403,7 @@ public class DataManager {
 	/** 清除历史消息记录 */
 	public void cleanLogs(String roomId) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.cleanLogs(roomId);
 		}else{
 			serverDataManager.cleanLogs(roomId);
@@ -414,7 +414,7 @@ public class DataManager {
 	 * 同一用户不能访问方式的数量
 	 */
 	public int getRoomTheSameUserCannotAccessNum(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
 		}else{
 			return serverDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
@@ -426,7 +426,7 @@ public class DataManager {
 
 	public void setFreeRoom(String roomId, int freeNum) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.setFreeRoom(roomId,freeNum);
 		}else{
 			serverDataManager.setFreeRoom(roomId,freeNum);
@@ -435,7 +435,7 @@ public class DataManager {
 
 	public void cancelFreeRoom(String roomId) {
 
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.cancelFreeRoom(roomId);
 		}else{
 			serverDataManager.cancelFreeRoom(roomId);
@@ -445,7 +445,7 @@ public class DataManager {
 	///////////////////////////////////////////////////////////////////////////////
 	/** 刪除用戶id-ip信息 */
 	public void delUserServer(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			redisDataManager.delUserServer(userId);
 		}else{
 			//serverDataManager.delUserServer(userId);
@@ -454,7 +454,7 @@ public class DataManager {
 
 	/** 获取用户所在服务器通道 */
 	public ChannelHandlerContext getUserServerChannel(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getUserServerChannel(userId);
 		}else{
 			//serverDataManager.getUserServerChannel(userId);
@@ -464,7 +464,7 @@ public class DataManager {
 
 	/** 获取用户所在服务器ip */
 	public String getUserServerIp(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getUserServerIp(userId);
 		}else{
 			//serverDataManager.getUserServerIp(userId);
@@ -474,7 +474,7 @@ public class DataManager {
 
 	/** 根據用戶id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public List<ChannelHandlerContext> getChannelListOfUserRoomByUserId(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getChannelListOfUserRoomByUserId(userId);
 		}else{
 			//serverDataManager.getChannelListOfUserRoomByUserId(userId);
@@ -484,7 +484,7 @@ public class DataManager {
 
 	/** 根據用戶id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public Set<String> getServerListOfUserRoomByUserId(String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getServerListOfUserRoomByUserId(userId);
 		}else{
 			//serverDataManager.getServerListOfUserRoomByUserId(userId);
@@ -494,7 +494,7 @@ public class DataManager {
 
 	/** 根據房間id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public Set<String> getServerListOfUserRoomByRoomId(String roomId, String userId) {
-		if(ConfManager.getIsCenter()){
+		if(ConfManager.getIsRedis()){
 			return redisDataManager.getServerListOfUserRoomByRoomId(roomId, userId);
 		}else{
 			//serverDataManager.getServerListOfUserRoomByRoomId(roomId, userId);

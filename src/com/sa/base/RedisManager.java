@@ -161,25 +161,6 @@ public enum RedisManager {
 			}
 		}
 	}
-	
-	/**
-	 * 登录、注册、上线、绑定--中心
-	 */
-	public void addOnlineContext(String userId, 
-			ChannelHandlerContext context, int channelType) {
-		// 如果通道为空 则抛出空指针错误
-		if (context == null) {
-			// 抛出通道为空的异常
-			throw new NullPointerException("context is null");
-		}
-		// 缓存 通道-用户信息
-		ServerDataPool.CHANNEL_USER_MAP.put(context, new ChannelExtend(userId, channelType));
-		// 缓存 用户-通道信息
-		ServerDataPool.USER_CHANNEL_MAP.put(userId,context);
-		// 緩存用戶-serverIp信息
-		String strIp = StringUtil.subStringIp(context.channel().remoteAddress().toString());
-		jedisUtil.setHash(USER_SERVERIP_MAP_KEY, userId, strIp);
-	}
 
 	/**注銷用戶信息--非中心*/
 	public void ungisterUserInfo(String userId) {
