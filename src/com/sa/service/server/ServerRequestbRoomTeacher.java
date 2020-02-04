@@ -39,12 +39,6 @@ public class ServerRequestbRoomTeacher extends Packet {
 	@Override
 	public void execPacket() {
 
-		/** 如果有中心 并 目标IP不是中心IP */
-		if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
-			// this.setOption(1, json);
-			/** 转发给中心 */
-			ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-		} else {
 			/** 根据房间id获取房间内普通教师信息 */
 			Map<String, People> hm = ServerDataPool.dataManager.getRoomTeachers(this.getRoomId());
 
@@ -72,9 +66,6 @@ public class ServerRequestbRoomTeacher extends Packet {
 				}
 
 			}
-
-		}
-
 	}
 
 	private String toJson(Entry<String, People> people) {
