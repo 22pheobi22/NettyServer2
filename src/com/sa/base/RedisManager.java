@@ -59,7 +59,8 @@ public enum RedisManager {
 	}
 
 	/** 向单一用户发送数据包 */
-	public void sendPacketTo(Packet pact, String consoleHead) throws Exception {
+	//server端发给指定用户 走内存或转中心
+	/*public void sendPacketTo(Packet pact, String consoleHead) throws Exception {
 		// 如果数据包为空 或 数据接收者是中心 返回
 		if (pact == null || "0".equals(pact.getToUserId()))
 			return;
@@ -87,7 +88,7 @@ public enum RedisManager {
 
 		// 给接收用户发送数据包
 		writeAndFlush(targetContext, pact);
-	}
+	}*/
 
 	/**
 	 * 向所有在线用户发送数据包
@@ -95,7 +96,8 @@ public enum RedisManager {
 	 * @throws Exception
 	 */
 	// 原逻辑：遍历房间内所有用户，除发送者及中心外均发送消息
-	// 现逻辑:查找房间内用户来源ip 中心IP除外 发消息 对于发送者所在ip 依旧发消息 在服务中判断
+	// 中心逻辑:查找房间内用户来源ip 中心IP除外 发消息 对于发送者所在ip 依旧发消息 在服务中判断
+	//server逻辑：根据房间id去redis中找用户id 再从内存找通道
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead) throws Exception {
 		// 如果数据包为空 则返回
 		if (pact == null)
@@ -114,7 +116,7 @@ public enum RedisManager {
 		// this.log(pact);
 
 		// 存储房间用户所在服务ip
-		Set<String> ipSet = new HashSet<>();
+		//Set<String> ipSet = new HashSet<>();
 		// 遍历用户map
 		for (Map.Entry<String, People> entry : roomUsers.entrySet()) {
 			
@@ -123,17 +125,17 @@ public enum RedisManager {
 				continue; 
 			}
 			 
-			String serverIp = jedisUtil.getHash(USER_SERVERIP_MAP_KEY, entry.getKey());
-			if (!ipSet.contains(serverIp)) {
+			//String serverIp = jedisUtil.getHash(USER_SERVERIP_MAP_KEY, entry.getKey());
+			//if (!ipSet.contains(serverIp)) {
 				// 获取用户通道
-				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(serverIp);
-				ipSet.add(serverIp);
+				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(entry.getKey());
+				//ipSet.add(serverIp);
 
 				if (null != ctx) {
 					// 向通道写数据并发送
 					writeAndFlush(ctx, pact);
 				}
-			}
+			//}
 
 		}
 	}
@@ -228,6 +230,7 @@ public enum RedisManager {
 	 * @throws Exception
 	 */
 	// 在中心 向房间所有用户所在的服务的ip对应通道发下行消息
+	//在服务 去redis找在本机用户
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead, String fromUserId) throws Exception {
 		// 如果数据包为空 则返回
 		if (pact == null)
@@ -246,7 +249,7 @@ public enum RedisManager {
 		// this.log(pact);
 
 		// 存放房间用户所在ip集合（过滤发送人）
-		Set<String> ipSet = new HashSet<>();
+		//Set<String> ipSet = new HashSet<>();
 
 		// 遍历用户map
 		for (Map.Entry<String, People> entry : roomUsers.entrySet()) {
@@ -258,15 +261,15 @@ public enum RedisManager {
 			// System.out.println(entry.getKey() + " " + pact.getPacketType());
 
 			// 获取用户对应的ip
-			String userServerIp = jedisUtil.getHash(USER_SERVERIP_MAP_KEY, entry.getKey());
+			//String userServerIp = jedisUtil.getHash(USER_SERVERIP_MAP_KEY, entry.getKey());
 
 			// 获取用户通道
 			// 首先判断ip是否已存在集合 已存在则已发不再发
-			if (ipSet.contains(userServerIp)) {
-				continue;
-			}
-			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userServerIp);
-			ipSet.add(userServerIp);
+			//if (ipSet.contains(userServerIp)) {
+				//continue;
+			//}
+			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(entry.getKey());
+			//ipSet.add(userServerIp);
 			// 如果通道不为空
 			if (null == ctx) {
 				continue;
