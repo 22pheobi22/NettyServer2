@@ -84,7 +84,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		String strIp = ctx.channel().remoteAddress().toString();
 		String log = "channelInactive客户端"+strIp+"关闭1";
-		System.err.println(log);
+		String logStr = loginOut(ctx, log);
+		System.err.println(logStr);
 		//若是中心客户端 给出特别日志
 		/*if(){
 			System.err.println(log);	
