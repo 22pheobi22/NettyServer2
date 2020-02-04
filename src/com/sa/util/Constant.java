@@ -23,11 +23,11 @@ public class Constant {
 	// 角色
 	// -------------------------------------------------------------
 	public final static String ROLE_SYSTEM = "SYSTEM";		// 系统
-	public final static String ROLE_TEACHER = "TEACHER";	// 教师
-	public final static String ROLE_ASSISTANT = "ASSISTANT";// 助教
-	public final static String ROLE_STUDENT = "STUDENT";	// 学生
-	public final static String ROLE_AUDIENCE = "AUDIENCE";	// 听众
-	public final static String ROLE_PARENT_TEACHER="PARENT_TEACHER";//主讲老师
+	public final static String ROLE_TEACHER = "TEACHER";	// 教师1
+	public final static String ROLE_ASSISTANT = "ASSISTANT";// 助教2
+	public final static String ROLE_STUDENT = "STUDENT";	// 学生3
+	public final static String ROLE_AUDIENCE = "AUDIENCE";	// 听众4
+	public final static String ROLE_PARENT_TEACHER="PARENT_TEACHER";//主讲老师0
 	// -------------------------------------------------------------
 
 	// 权限
