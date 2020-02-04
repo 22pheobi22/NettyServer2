@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ConfManager;
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
@@ -42,13 +42,14 @@ public class ServerRequestbAll extends Packet {
 		Map<String, Object> result = Permission.INSTANCE.checkUserRole(this.getRoomId(), this.getFromUserId(), checkRoleSet);
 		/** 如果校验成功*/
 		if (0 == ((Integer) result.get("code"))) {
-			/** 实例化 发送全体消息 下行 并执行*/
-			ClientResponebAll clientResponebAll = new ClientResponebAll(this.getPacketHead(), this.getOptions());
-			clientResponebAll.execPacket();
 			/** 如果有中心 并且 中心不是目标地址*/
-			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
+			if (ConfManager.getIsCenter()) {
 				/** 转发到中心*/
-				ServerManager.INSTANCE.sendPacketToCenter(clientResponebAll, Constant.CONSOLE_CODE_TS);
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+			}else{
+				/** 实例化 发送全体消息 下行 并执行*/
+				ClientResponebAll clientResponebAll = new ClientResponebAll(this.getPacketHead(), this.getOptions());
+				clientResponebAll.execPacket();
 			}
 		}
 		/** 实例化消息回执 赋值 并 执行*/

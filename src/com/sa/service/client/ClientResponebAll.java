@@ -16,7 +16,7 @@ package com.sa.service.client;
 
 import java.util.TreeMap;
 
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -43,7 +43,7 @@ public class ClientResponebAll extends Packet {
 	public void execPacket() {
 		try {
 			/** 发送消息给全体用户*/
-			ServerManager.INSTANCE.sendPacketToAllUsers(this,Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketToAllUsers(this,Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
