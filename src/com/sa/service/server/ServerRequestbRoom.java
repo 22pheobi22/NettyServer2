@@ -14,10 +14,7 @@
  */
 package com.sa.service.server;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 import com.sa.base.ConfManager;
 import com.sa.base.ServerDataPool;
@@ -48,10 +45,8 @@ public class ServerRequestbRoom extends Packet {
 
 			/** 如果有中心 且 目标IP不是中心IP */
 			if (ConfManager.getIsCenter()) {
-				/** 实例化房间内发消息类型 下行 并赋值 并 执行 */
-				ClientResponebRoom crr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
 				/** 转发给中心 */
-				ServerManager.INSTANCE.sendPacketToCenter(crr, Constant.CONSOLE_CODE_TS);
+				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
