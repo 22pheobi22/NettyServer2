@@ -54,11 +54,11 @@ public enum Manager {
 
 	/** 向单一用户发送数据包*/
 	public void sendPacketTo(Packet pact, String consoleHead) throws Exception {
-		if(ConfManager.getIsRedis()){
+		/*if(ConfManager.getIsRedis()){
 			redisManager.sendPacketTo(pact, consoleHead);
-		}else{
+		}else{*/
 			serverManager.sendPacketTo(pact, consoleHead);
-		}
+		//}
 	}
 	/** 向中心发送数据包*/
 	public void sendPacketToCenter(Packet pact, String consoleHead) {
