@@ -46,35 +46,24 @@ public class ServerRequestbRoom extends Packet {
 		/** 如果校验合格 */
 		if (0 == ((Integer) result.get("code"))) {
 
-			/** 实例化房间内发消息类型 下行 并赋值 并 执行 */
-			ClientResponebRoom crr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
-			String[] roomIds = this.getRoomId().split(",");
-
 			/** 如果有中心 且 目标IP不是中心IP */
-			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
+			if (ConfManager.getIsCenter()) {
+				/** 实例化房间内发消息类型 下行 并赋值 并 执行 */
+				ClientResponebRoom crr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
 				/** 转发给中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(crr, Constant.CONSOLE_CODE_TS);
 			} else {
+				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
 						ServerDataPool.dataManager.setRoomChats(rId,
 								System.currentTimeMillis() + "," + this.getTransactionId(), this.getFromUserId(),
 								(String) this.getOption(1));
+						
+						ClientResponebRoom newCrr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
+						newCrr.setRoomId(rId);
+						newCrr.execPacket();
 					}
-				}
-			}
-			if (null != roomIds && roomIds.length > 0) {
-				for (String rId : roomIds) {
-					ClientResponebRoom newCrr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
-					try {
-						BeanUtils.copyProperties(crr, newCrr);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					}
-					newCrr.setRoomId(rId);
-					newCrr.execPacket();
 				}
 			}
 		}
