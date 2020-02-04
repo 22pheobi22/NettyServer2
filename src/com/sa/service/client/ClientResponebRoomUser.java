@@ -17,6 +17,7 @@ package com.sa.service.client;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.base.element.People;
@@ -48,16 +49,16 @@ public class ClientResponebRoomUser extends Packet {
 				if (null != people)
 					toJson(people);
 				/** 向房间内全员发送消息*/
-				ServerManager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
+				Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
 			/** 如果 用户减量不为空*/
 			} else if(null != this.getOption(12)){
 				/** 向房间内全员发送消息*/
-				ServerManager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
 			} else {
 				/** 设置目标用户的id*/
 				this.setToUserId(this.getFromUserId());
 				/** 发消息给目标用户*/
-				ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 			}
 
 		} catch (Exception e) {
