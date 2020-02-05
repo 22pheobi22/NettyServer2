@@ -16,7 +16,7 @@ package com.sa.service.client;
 
 import java.util.TreeMap;
 
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -34,7 +34,7 @@ public class ClientResponebShareUpd extends Packet {
 	public void execPacket() {
 		try {
 			/** 发送消息给房间内所有用户*/
-			ServerManager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
+			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
