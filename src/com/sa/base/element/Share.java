@@ -175,4 +175,7 @@ public class Share {
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
 }
