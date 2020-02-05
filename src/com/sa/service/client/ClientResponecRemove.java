@@ -33,7 +33,7 @@ public class ClientResponecRemove extends Packet {
 	}
 
 	@Override
-	public void execPacket() {
+	public void execPacket() {//有中心此方法不執行
 		/** 发送被迫下线通知*/
 		offline();
 		/** 移除用户*/
