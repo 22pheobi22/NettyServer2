@@ -1,6 +1,6 @@
 package com.sa.service.client;
 
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -20,7 +20,7 @@ public class ClientResponebShareHistory extends Packet {
 			/** 设置目标用户的id*/
 			this.setToUserId(this.getFromUserId());
 			/** 发消息给目标用户*/
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
