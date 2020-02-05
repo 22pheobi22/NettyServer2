@@ -26,7 +26,7 @@ public class ServerRequestcShareRemove extends Packet {
 		/** 如果选项不空 并 角色校验合格 */
 		if (null != op1 && !"".equals(op1) && 0 == ((Integer) result.get("code"))) {
 			/** 如果有中心 并 目标地址不是中心地址 */
-			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
+			if (ConfManager.getIsCenter()) {
 				/** 转发到中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
@@ -40,7 +40,6 @@ public class ServerRequestcShareRemove extends Packet {
 						ServerDataPool.dataManager.removeShare(this.getRoomId(), op1);
 					}
 				}
-
 			}
 		}
 

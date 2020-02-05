@@ -15,9 +15,7 @@
 package com.sa.service.server;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.sa.base.ConfManager;
 import com.sa.base.ServerDataPool;
@@ -25,7 +23,6 @@ import com.sa.base.ServerManager;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
-import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
 
 public class ServerRequestbShareUpdSelf extends Packet {
@@ -57,7 +54,7 @@ public class ServerRequestbShareUpdSelf extends Packet {
 		/** 如果校验成功 */
 		if (0 == ((Integer) result.get("code"))) {
 			/** 如果有中心 并 目标IP不是中心IP */
-			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
+			if (ConfManager.getIsCenter()) {
 				/** 转发消息到中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {

@@ -14,7 +14,7 @@
  */
 package com.sa.service.client;
 
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -34,7 +34,7 @@ public class ClientResponebShareGet extends Packet {
 			/** 设置目标用户*/
 			this.setToUserId(this.getFromUserId());
 			/** 向目标用户发送消息*/
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

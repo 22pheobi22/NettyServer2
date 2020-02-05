@@ -18,24 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.sa.base.ConfManager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientResponebShareGet;
-import com.sa.util.Constant;
 
 public class ServerRequestbShareGet extends Packet {
 	public ServerRequestbShareGet(){}
 
 	@Override
 	public void execPacket() {
-		/** 如果有中心 并 目标IP不是中心IP */
-		if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
-			/** 消息转发给中心 */
-			ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-		} else {
 			/** 获取选项 1 的内容 */
 			String op1 = (String) this.getOption(1);
 			String op2 = (String) this.getOption(2);
@@ -95,7 +87,6 @@ public class ServerRequestbShareGet extends Packet {
 					}
 				}
 			}
-		}
 	}
 
 	@Override
