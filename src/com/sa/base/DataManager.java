@@ -60,9 +60,9 @@ public class DataManager {
 	 */
 	public Object getShare(String roomId, String key) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getShare(roomId);
+			return redisDataManager.getShare(roomId, key);
 		}else{
-			return serverDataManager.getShare(roomId);
+			return serverDataManager.getShare(roomId, key);
 		}
 	}
 
