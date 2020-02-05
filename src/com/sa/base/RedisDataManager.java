@@ -87,7 +87,7 @@ public class RedisDataManager {
 	public List<Object> getShareList(String roomId, String key) {
 		// 根据roomid获取房间信息
 		Room room = this.getRoom(roomId);
-		
+
 		Share share = room.getShare().get(key);
 		if (null == share) {
 			return null;
@@ -229,16 +229,48 @@ public class RedisDataManager {
 		Map<String, People> peoplesMap = room.getPeoples();
 		for (Entry<String, People> people : peoplesMap.entrySet()) {
 			String userId = people.getKey();
-			jedisUtil.delHash(USER_SERVERIP_MAP_KEY, userId);
+			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+
+			if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+			}
+			if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+			}
+
+			if (null != ctx) {
+				ctx.close();
+			}
 		}
 		return room;
 	}
 
+	
+	public Room removeRoom(Room room) {//--移除各server上用户channel
+		Map<String, People> peoplesMap = room.getPeoples();
+		for (Entry<String, People> people : peoplesMap.entrySet()) {
+			String userId = people.getKey();
+			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+
+			if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+			}
+			if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+			}
+
+			if (null != ctx) {
+				ctx.close();
+			}
+		}
+		return room;
+	}
+	
 	/**
 	 * 移出聊天室
 	 */
 	public synchronized void removeRoomUser(String userId) {
-		//Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
+		// Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
 		Set<String> keysAll = jedisUtil.scanKeys(ROOM_INFO_MAP_KEY + "*");
 		// 便利房间信息Map
 		for (String key : keysAll) {
@@ -260,7 +292,7 @@ public class RedisDataManager {
 
 		// 根据roomid获取房间信息
 		Room room = this.getRoom(roomId);
-		
+
 		// 获取根据userid被成功删除的人员信息
 		People people = room.getPeoples().remove(userId);
 		// 如果人员信息不为空
@@ -354,7 +386,7 @@ public class RedisDataManager {
 
 		// 根据roomid获取房间信息
 		Room room = this.getRoom(roomId);
-		
+
 		// 设置初始化禁止操作角色
 		room.setNotDoRole(roomRoles);
 		// 设置初始化禁止操作角色
@@ -410,7 +442,7 @@ public class RedisDataManager {
 
 		Set<String> keys = new HashSet<>();
 
-		//Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
+		// Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
 		Set<String> keysAll = jedisUtil.scanKeys(ROOM_INFO_MAP_KEY + "*");
 		for (String key : keysAll) {
 			String roomId = key.replace(ROOM_INFO_MAP_KEY, "");
@@ -668,14 +700,14 @@ public class RedisDataManager {
 
 		return null;
 	}
-	
+
 	/**
 	 * 获取人员存在的房间
 	 */
 	public String getUserRoomNo(String userId) {
 		String roomId = "";
 
-		//Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
+		// Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
 		Set<String> keysAll = jedisUtil.scanKeys(ROOM_INFO_MAP_KEY + "*");
 		for (String key : keysAll) {
 			String roomStr = jedisUtil.getString(key);
@@ -692,7 +724,7 @@ public class RedisDataManager {
 	/** 获取 房间id 和 每个房间人数 */
 	public Map<String, Integer> getRoomInfo() {
 
-		//Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
+		// Set<String> keysAll = jedisUtil.getKeysAll(ROOM_INFO_MAP_KEY + "*");
 		Set<String> keysAll = jedisUtil.scanKeys(ROOM_INFO_MAP_KEY + "*");
 		Map<String, Integer> roomInfoMap = new HashMap<String, Integer>();
 		for (String key : keysAll) {

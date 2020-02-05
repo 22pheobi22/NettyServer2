@@ -243,6 +243,31 @@ public class ServerDataManager {
 		return room;
 	}
 
+	
+	/**
+	 * 注销聊天室
+	 */
+	public Room removeRoom(Room room) {//--移除各server上用户channel
+
+		Map<String, People> peoplesMap = room.getPeoples();
+		for (Entry<String, People> people : peoplesMap.entrySet()) {
+			String userId = people.getKey();
+			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+			
+			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
+				ServerDataPool.USER_CHANNEL_MAP.remove(userId);	
+			}
+			if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
+				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);	
+			}
+
+			if(null!=ctx){
+				ctx.close();	
+			}
+		}
+		return room;
+	}
+	
 	/**
 	 * 移出聊天室
 	 */

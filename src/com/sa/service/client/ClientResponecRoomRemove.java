@@ -17,6 +17,7 @@ package com.sa.service.client;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
+import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -40,6 +41,9 @@ public class ClientResponecRoomRemove extends Packet {
 				ServerDataPool.dataManager.cleanLogs(this.getRoomId());
 				/** 删除房间缓存*/
 				ServerDataPool.dataManager.removeRoom(this.getRoomId());
+			}else{
+				Room room = (Room) this.getOption(10);
+				ServerDataPool.dataManager.removeRoom(room);
 			}
 			
 		} catch (Exception e) {
