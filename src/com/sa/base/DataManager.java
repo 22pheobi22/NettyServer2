@@ -161,6 +161,14 @@ public class DataManager {
 			return serverDataManager.removeRoom(roomId);
 		}
 	}
+	
+	public Room removeRoom(Room room) {
+		if(ConfManager.getIsRedis()){
+			return redisDataManager.removeRoom(room);
+		}else{
+			return serverDataManager.removeRoom(room);
+		}
+	}
 
 	/**
 	 * 移出聊天室
