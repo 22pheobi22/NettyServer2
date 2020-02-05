@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientResponecShareRemove;
@@ -28,7 +28,7 @@ public class ServerRequestcShareRemove extends Packet {
 			/** 如果有中心 并 目标地址不是中心地址 */
 			if (ConfManager.getIsCenter()) {
 				/** 转发到中心 */
-				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
