@@ -71,7 +71,7 @@ public class RedisDataManager {
 	 */
 	public Object getShare(String roomId, String key) {
 		// 根据roomid获取房间信息
-				Room room = this.getRoom(roomId);
+		Room room = this.getRoom(roomId);
 
 		Share share = room.getShare().get(key);
 		if (null == share) {
