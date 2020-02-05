@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
@@ -60,25 +60,26 @@ public class ServerRequestcRemove extends Packet {
 		Map<String, Object> result = Permission.INSTANCE.checkUserRole(this.getRoomId(), this.getFromUserId(), checkRoleSet);
 		/** 校验成功*/
 		if (0 == ((Integer) result.get("code"))) {
-			String[] roomIds = this.getRoomId().split(",");
-			if (null != roomIds && roomIds.length > 0) {
-				for (String rId : roomIds) {
-					/** 获取目标用户信息*/
-					People people = ServerDataPool.dataManager.getRoomUesr(rId, this.getToUserId());
-					/** 如果用户信息不为空*/
-					if (null != people)
-						/** 设置删除成功*/
-						this.setOption(255, "deleted");
-					/** 实例化删除信息 下行 并赋值 并 执行*/
-					ClientResponecRemove clientResponecRemove = new ClientResponecRemove(this.getPacketHead(), this.getOptions());
-					clientResponecRemove.setRoomId(rId);
-					clientResponecRemove.execPacket();
-				}
-			}
 			/** 如果有中心*/
 			if (ConfManager.getIsCenter()) {
 				/** 转发到中心*/
-				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+			}else{
+				String[] roomIds = this.getRoomId().split(",");
+				if (null != roomIds && roomIds.length > 0) {
+					for (String rId : roomIds) {
+						/** 获取目标用户信息*/
+						People people = ServerDataPool.dataManager.getRoomUesr(rId, this.getToUserId());
+						/** 如果用户信息不为空*/
+						if (null != people)
+							/** 设置删除成功*/
+							this.setOption(255, "deleted");
+						/** 实例化删除信息 下行 并赋值 并 执行*/
+						ClientResponecRemove clientResponecRemove = new ClientResponecRemove(this.getPacketHead(), this.getOptions());
+						clientResponecRemove.setRoomId(rId);
+						clientResponecRemove.execPacket();
+					}
+				}
 			}
 
 		}
