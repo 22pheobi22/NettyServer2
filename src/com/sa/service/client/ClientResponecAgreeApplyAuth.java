@@ -17,6 +17,7 @@ package com.sa.service.client;
 import java.util.TreeMap;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.net.Packet;
@@ -54,7 +55,7 @@ public class ClientResponecAgreeApplyAuth extends Packet {
 			}
 
 			/** 发送消息给目标用户 */
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
