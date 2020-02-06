@@ -34,7 +34,7 @@ public class ClientResponecShareRemove extends Packet {
 	public void execPacket() {
 		try {
 			/** 发送给房间内所有用户*/
-			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S,this.getFromUserId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

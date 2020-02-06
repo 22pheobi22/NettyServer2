@@ -162,14 +162,20 @@ public class DataManager {
 		}
 	}
 	
-	public Room removeRoom(Room room) {
+	/*public Room removeRoom(Room room,String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeRoom(room);
+			return redisDataManager.removeRoom(room,roomId);
 		}else{
-			return serverDataManager.removeRoom(room);
+			return serverDataManager.removeRoom(room,roomId);
+		}
+	}*/
+	public void removeUserChannel(String userId) {
+		if(ConfManager.getIsRedis()){
+			redisDataManager.removeUserChannel(userId);
+		}else{
+			//serverDataManager.removeUserChannel(userId);
 		}
 	}
-
 	/**
 	 * 移出聊天室
 	 */
