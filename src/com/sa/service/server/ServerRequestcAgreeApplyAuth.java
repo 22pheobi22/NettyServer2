@@ -47,7 +47,7 @@ public class ServerRequestcAgreeApplyAuth extends Packet {
 		/** 如果校验成功 */
 		if (0 == ((Integer) result.get("code"))) {
 			/** 如果有中心 并 目标IP不是中心IP */
-			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
+			if (ConfManager.getIsCenter()) {
 				/** 消息转发到中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
