@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
@@ -72,10 +72,10 @@ public class ClientResponecBegin extends Packet {
 						this.setOption(1, Constant.ERR_CODE_10096);
 					}
 					/** 发送消息 */
-					ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+					Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 				}
 			} else {
-				ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
