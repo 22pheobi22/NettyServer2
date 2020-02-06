@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
@@ -38,11 +38,8 @@ public class ServerRequestcApplyAuth extends Packet {
 	@Override
 	public void execPacket() {
 		if (ConfManager.getIsCenter()){
-			/** 实例化一对一消息类型 下行 并 赋值*/
-			ClientResponecApplyAuth clientResponebApplyAuth = new ClientResponecApplyAuth(this.getPacketHead(), this.getOptions());
-
 			/** 发送 下行类型 到中心*/
-			ServerManager.INSTANCE.sendPacketToCenter(clientResponebApplyAuth, Constant.CONSOLE_CODE_TS);
+			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 		}else{
 			String[] roomIds = this.getRoomId().split(",");
 			if (null != roomIds && roomIds.length > 0) {

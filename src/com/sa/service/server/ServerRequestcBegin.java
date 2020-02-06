@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ConfManager;
-import com.sa.base.ServerManager;
+import com.sa.base.Manager;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
@@ -29,7 +29,7 @@ public class ServerRequestcBegin extends Packet {
 			/** 如果有中心 并 目标IP不是中心IP*/
 			if (ConfManager.getIsCenter()) {
 				/** 消息转发到中心*/
-				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
 //				HashSet<String> roomRoles = getRole(this.getOption(1));
 //				ServerDataPool.serverDataManager.setRoomRole(this.getRoomId(), roomRoles, ConfManager.getRoomChat());
