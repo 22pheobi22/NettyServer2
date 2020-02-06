@@ -14,10 +14,17 @@
  */
 package com.sa.service.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.alibaba.fastjson.JSONObject;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
+import com.sa.base.element.People;
 import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
@@ -44,7 +51,19 @@ public class ClientResponecRoomRemove extends Packet {
 				ServerDataPool.dataManager.removeRoom(this.getRoomId());
 			}else{
 				Room room = JSONObject.parseObject((String) this.getOption(2), Room.class);
-				ServerDataPool.dataManager.removeRoom(room);
+				Map<String, People> peoplesMap = room.getPeoples();
+				for (Entry<String, People> people : peoplesMap.entrySet()) {
+					String userId = people.getKey();
+					String userRoomNo = ServerDataPool.dataManager.getUserRoomNo(userId);
+					if(null!=userRoomNo&&!"".equals(userRoomNo)){
+						List<String> list = new ArrayList<String>(Arrays.asList(userRoomNo.split(",")));
+						list.remove(this.getRoomId());
+						if(list.size()>0){
+							continue;
+						}
+					}
+					ServerDataPool.dataManager.removeUserChannel(userId);
+				}
 			}
 			
 		} catch (Exception e) {

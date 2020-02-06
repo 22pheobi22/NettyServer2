@@ -44,7 +44,7 @@ public class ClientResponebRoom extends Packet {
 	public void execPacket() {
 		try {
 			/** 发送给本服务器房间内所有人*/
-			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S,this.getFromUserId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

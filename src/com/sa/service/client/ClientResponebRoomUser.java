@@ -52,7 +52,7 @@ public class ClientResponebRoomUser extends Packet {
 			/** 如果 用户减量不为空*/
 			} else if(null != this.getOption(12)){
 				/** 向房间内全员发送消息*/
-				Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
+				Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S,this.getFromUserId());
 			} else {
 				/** 设置目标用户的id*/
 				this.setToUserId(this.getFromUserId());

@@ -245,27 +245,39 @@ public class RedisDataManager {
 		return room;
 	}
 
-	
-	public Room removeRoom(Room room) {//--移除各server上用户channel
-		Map<String, People> peoplesMap = room.getPeoples();
-		for (Entry<String, People> people : peoplesMap.entrySet()) {
-			String userId = people.getKey();
-			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+	/*
+	 * public Room removeRoom(Room room,String roomId) {//--移除各server上用户channel
+	 * Map<String, People> peoplesMap = room.getPeoples(); for (Entry<String,
+	 * People> people : peoplesMap.entrySet()) { String userId =
+	 * people.getKey(); String userRoomNo =
+	 * ServerDataPool.dataManager.getUserRoomNo(userId); List<String> rooms =
+	 * Arrays.asList(userRoomNo.split(",")); rooms.remove(roomId);
+	 * if(rooms.size()>0){ continue; } ChannelHandlerContext ctx =
+	 * ServerDataPool.USER_CHANNEL_MAP.get(userId);
+	 * 
+	 * if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+	 * ServerDataPool.USER_CHANNEL_MAP.remove(userId); } if (null != ctx &&
+	 * ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+	 * ServerDataPool.CHANNEL_USER_MAP.remove(ctx); }
+	 * 
+	 * if (null != ctx) { ctx.close(); } } return room; }
+	 */
+	public void removeUserChannel(String userId) {// --移除各server上用户channel
 
-			if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
-				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
-			}
-			if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
-				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
-			}
+		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 
-			if (null != ctx) {
-				ctx.close();
-			}
+		if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 		}
-		return room;
+		if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+		}
+
+		if (null != ctx) {
+			ctx.close();
+		}
 	}
-	
+
 	/**
 	 * 移出聊天室
 	 */
@@ -713,7 +725,7 @@ public class RedisDataManager {
 			String roomStr = jedisUtil.getString(key);
 			Room room = JSON.parseObject(roomStr, Room.class);
 			// 如果如果用户信息不为空
-			if (null != room.getPeoples().get(userId)) {
+			if (null!=room&&null != room.getPeoples().get(userId)) {
 				roomId += (key.replace(ROOM_INFO_MAP_KEY, "") + ",");
 			}
 		}
