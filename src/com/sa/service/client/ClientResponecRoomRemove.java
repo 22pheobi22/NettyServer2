@@ -14,6 +14,7 @@
  */
 package com.sa.service.client;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
@@ -42,7 +43,7 @@ public class ClientResponecRoomRemove extends Packet {
 				/** 删除房间缓存*/
 				ServerDataPool.dataManager.removeRoom(this.getRoomId());
 			}else{
-				Room room = (Room) this.getOption(10);
+				Room room = JSONObject.parseObject((String) this.getOption(2), Room.class);
 				ServerDataPool.dataManager.removeRoom(room);
 			}
 			
