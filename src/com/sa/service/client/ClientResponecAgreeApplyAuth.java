@@ -14,10 +14,9 @@
  */
 package com.sa.service.client;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.TreeMap;
 
+import com.sa.base.ConfManager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.net.Packet;
@@ -27,7 +26,7 @@ import com.sa.util.Constant;
 
 public class ClientResponecAgreeApplyAuth extends Packet {
 
-	public ClientResponecAgreeApplyAuth(){
+	public ClientResponecAgreeApplyAuth() {
 		this.setOption(253, String.valueOf(System.currentTimeMillis()));
 	}
 
@@ -45,32 +44,17 @@ public class ClientResponecAgreeApplyAuth extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/**
-			 * option 1 : 权限CODE
-			 * option 2 : 权限名称
-			 * option 3 : 操作 (+：添加 -:删除)
-			 * option 4 : 多人或单人权限标识（1、n）
-			 */
-			ServerDataPool.dataManager.setRoomUserDefAuth(this.getRoomId(),
-					this.getToUserId(),
-					(String) this.getOption(1),
-					(String) this.getOption(3),
-					(String) this.getOption(4));
-			
-			
-			/** 发送消息给目标用户*/
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
-
-			/*String userId = this.getToUserId();
-			if (userId.endsWith("APP")) {
-				userId = userId.replace("APP", "");
-			} else {
-				userId += "APP";
+			if (!ConfManager.getIsCenter()) {
+				/**
+				 * option 1 : 权限CODE option 2 : 权限名称 option 3 : 操作 (+：添加 -:删除)
+				 * option 4 : 多人或单人权限标识（1、n）
+				 */
+				ServerDataPool.dataManager.setRoomUserDefAuth(this.getRoomId(), this.getToUserId(),
+						(String) this.getOption(1), (String) this.getOption(3), (String) this.getOption(4));
 			}
-			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-			if (null != ctx) {
-				ServerManager.INSTANCE.sendPacketTo(this, ctx, Constant.CONSOLE_CODE_S);
-			}*/
+
+			/** 发送消息给目标用户 */
+			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
