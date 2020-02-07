@@ -40,32 +40,33 @@ public enum LoginManager {
 
 		/** 获取 用户 角色 */
 		String role = (String) loginPact.getOption(2);
-
-		/** 是否 启用 外部校验 */
-		boolean validEnable = ConfManager.getValidateEnable();
-		/** 如果 有 外部校验 */
-		if (validEnable) {
-			//进行外部校验 返回false 则验证失败 直接返回
-			String validateResult = doRemoteValidate(context, loginPact, role);
-			if (validateResult.equals("false")) {
-				return;
-			}
-			role = validateResult;
-		}
-		/** 格式化 用户角色 */
-		HashSet<String> userRole = toRole(role);
-		//进行角色校验  返回非空map 则验证失败 
-		Map<String, Object> roleValidate = doRoleValidate(userRole, role);
-		if (!roleValidate.isEmpty()) {
-			code = (int) roleValidate.get("code");
-			msg = (String) roleValidate.get("msg");
-			/** 登录信息 下行 处理 */
-			clientLogin(loginPact, code, msg, role, context);
-			return;
-		}
-
+		
 		/** 如果是客户端登录 */
 		if (!ConfManager.getCenterId().equals(loginPact.getFromUserId())) {
+
+			/** 是否 启用 外部校验 */
+			boolean validEnable = ConfManager.getValidateEnable();
+			/** 如果 有 外部校验 */
+			if (validEnable) {
+				//进行外部校验 返回false 则验证失败 直接返回
+				String validateResult = doRemoteValidate(context, loginPact, role);
+				if (validateResult.equals("false")) {
+					return;
+				}
+				role = validateResult;
+			}
+			/** 格式化 用户角色 */
+			HashSet<String> userRole = toRole(role);
+			//进行角色校验  返回非空map 则验证失败 
+			Map<String, Object> roleValidate = doRoleValidate(userRole, role);
+			if (!roleValidate.isEmpty()) {
+				code = (int) roleValidate.get("code");
+				msg = (String) roleValidate.get("msg");
+				/** 登录信息 下行 处理 */
+				clientLogin(loginPact, code, msg, role, context);
+				return;
+			}
+			
 			SUniqueLogon uniqueLogon = new SUniqueLogon(loginPact.getPacketHead());
 			uniqueLogon.setOptions(loginPact.getOptions());
 			
@@ -77,7 +78,6 @@ public enum LoginManager {
 			Manager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
 		}else{
 			/**如果是中心连接*/
-			
 			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());
 			/** 登录信息 下行 处理 */
 			clientLogin(loginPact, code, msg, role, context);
