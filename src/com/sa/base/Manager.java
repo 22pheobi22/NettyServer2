@@ -153,11 +153,11 @@ public enum Manager {
 	 *   注销用户通信渠道
 	 */
 	public void ungisterUserContext(ChannelHandlerContext context) {
-		if(ConfManager.getIsRedis()){
-			redisManager.ungisterUserContext(context);
-		}else{
+		/*if(ConfManager.getIsRedis()){
+			//redisManager.ungisterUserContext(context);
+		}else{*/
 			serverManager.ungisterUserContext(context);
-		}
+		//}
 	}
 
 	/** 想全体用户发送消息*/

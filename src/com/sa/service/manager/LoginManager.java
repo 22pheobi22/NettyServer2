@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.ChannelExtend;
 import com.sa.service.client.ClientLogin;
 import com.sa.service.server.SUniqueLogon;
@@ -65,8 +64,8 @@ public enum LoginManager {
 			return;
 		}
 
-		/** 如果 有 中心 */
-		if (ConfManager.getIsCenter()&&!ConfManager.getCenterId().equals(loginPact.getFromUserId())) {
+		/** 如果是客户端登录 */
+		if (!ConfManager.getCenterId().equals(loginPact.getFromUserId())) {
 			SUniqueLogon uniqueLogon = new SUniqueLogon(loginPact.getPacketHead());
 			uniqueLogon.setOptions(loginPact.getOptions());
 			
@@ -77,16 +76,16 @@ public enum LoginManager {
 			/** 转发 登录信息 上行 到中心 */
 			Manager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
 		}else{
-			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());
+			/**如果是中心连接*/
 			
+			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());
 			/** 登录信息 下行 处理 */
 			clientLogin(loginPact, code, msg, role, context);
 		}
-
 	}
 
 	private void doLogin(String userId,ChannelHandlerContext context, int channelType) {
-		ServerManager.INSTANCE.addOnlineContext(userId, context, channelType);
+		Manager.INSTANCE.addOnlineContext(userId, context, channelType);
 	}
 
 	private Map<String, Object> doRoleValidate(HashSet<String> userRole, String role) {
@@ -106,9 +105,6 @@ public enum LoginManager {
 
 	private String doRemoteValidate(ChannelHandlerContext context, ServerLogin loginPact, String role) {
 		String strUserId = loginPact.getFromUserId();
-		/*if ("1".equals(role) || Constant.ROLE_TEACHER.equals(role)) {
-			strUserId = strUserId.replace("APP", "");
-		}*/
 		String tmpUserId = strUserId.replaceAll("T", "").replaceAll("t", "").replaceAll("J", "").replaceAll("j", "");
 		/** 获取 用户 token */
 		String token = (String) loginPact.getOption(6);
@@ -143,12 +139,7 @@ public enum LoginManager {
 		cl.setOption(254, msg);
 
 		try {
-			// if (loginPact.getRemoteIp().equals(ConfManager.getCenterIp())) {
-			// ServerManager.INSTANCE.sendPacketTo2(cl, context,
-			// Constant.CONSOLE_CODE_S);
-			// } else {
 			Manager.INSTANCE.sendPacketTo(cl, context, Constant.CONSOLE_CODE_S);
-			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -192,30 +183,5 @@ public enum LoginManager {
 		String rs = HttpClientUtil.post(url, params);
 
 		return rs;
-	}
-
-	/** 校验 单点登录 */
-	public Map<String,Object> checkUniqueLogon(ServerLogin sl, HashSet<String> userRole, ChannelHandlerContext context) {
-		Map<String,Object> map = new HashMap<>();
-		map.put("code", 1);
-		map.put("result", null);
-
-		if ("".equals(sl.getFromUserId())) {
-			map.put("code", 2000);
-		}
-		
-		/** 根据 用户id 获取 用户通道 */
-		ChannelHandlerContext temp = ServerDataPool.USER_CHANNEL_MAP.get(sl.getFromUserId());
-		/** 如果 用户通道 不为空 */
-		if (null != temp) {
-			/** 如果 不是 教师  和主讲老师*/
-			//if (!(userRole.contains(Constant.ROLE_TEACHER)||userRole.contains(Constant.ROLE_PARENT_TEACHER))) {
-				map.put("code", 0);
-				map.put("result", temp);
-			/*} else {
-				map.put("code", 10093);
-			}*/
-		}
-		return map;
 	}
 }

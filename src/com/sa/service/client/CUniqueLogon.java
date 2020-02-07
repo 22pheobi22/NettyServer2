@@ -16,9 +16,7 @@ package com.sa.service.client;
 
 import java.util.HashSet;
 
-import com.sa.base.ConfManager;
 import com.sa.base.Manager;
-import com.sa.base.ServerDataManager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
 import com.sa.base.element.ChannelExtend;
