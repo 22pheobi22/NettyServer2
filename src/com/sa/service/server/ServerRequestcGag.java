@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.base.element.Room;
 import com.sa.net.Packet;
@@ -50,16 +50,23 @@ public class ServerRequestcGag extends Packet {
 		
 		/** 如果校验成功*/
 		if (0 == ((Integer) result.get("code"))) {
-			String[] roomIds = this.getRoomId().split(",");
-			if (null != roomIds && roomIds.length > 0) {
-				for (String rId : roomIds) {
-					if (null == this.getToUserId() || "".equals(this.getToUserId())) {
-						all(rId);
-					} else {
-						one(this.getToUserId(),rId);
+			if(!ConfManager.getIsCenter()){
+				
+				String[] roomIds = this.getRoomId().split(",");
+				if (null != roomIds && roomIds.length > 0) {
+					for (String rId : roomIds) {
+						if (null == this.getToUserId() || "".equals(this.getToUserId())) {
+							all(rId);
+						} else {
+							one(this.getToUserId(),rId);
+						}
 					}
 				}
+			}else{
+				/** 转发到中心*/
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			}
+				
 
 		}
 
@@ -81,10 +88,7 @@ public class ServerRequestcGag extends Packet {
 			cm.setRoomId(roomId);
 			cm.execPacket();
 		/** 如果有中心 并 目标IP不是中心IP*/
-		} else if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
-			/** 转发到中心*/
-			ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-		}
+		} 
 	}
 
 	private void all(String roomId) {
