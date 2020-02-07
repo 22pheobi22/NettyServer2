@@ -61,18 +61,19 @@ public class ClientResponecBegin extends Packet {
 
 				/** 遍历用户信息 */
 				for (Entry<String, People> entry : hm.entrySet()) {
+					ClientResponecBegin clientResponecBegin = new ClientResponecBegin(this.getPacketHead());
 					/** 设置目标用户id */
-					this.setToUserId(entry.getKey());
+					clientResponecBegin.setToUserId(entry.getKey());
 					/** 如果该用户有说话的权利 */
 					if (0 == entry.getValue().getAuth().get(Constant.AUTH_SPEAK)) {
 						/** 设置 消息 为 禁言 */
-						this.setOption(1, Constant.ERR_CODE_10095);
+						clientResponecBegin.setOption(1, Constant.ERR_CODE_10095);
 					} else {
 						/** 设置 消息 为 解除禁言 */
-						this.setOption(1, Constant.ERR_CODE_10096);
+						clientResponecBegin.setOption(1, Constant.ERR_CODE_10096);
 					}
 					/** 发送消息 */
-					Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+					Manager.INSTANCE.sendPacketTo(clientResponecBegin, Constant.CONSOLE_CODE_S);
 				}
 			} else {
 				Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
