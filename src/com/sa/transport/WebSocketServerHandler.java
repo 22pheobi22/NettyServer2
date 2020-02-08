@@ -33,7 +33,6 @@ import com.sa.service.server.ServerLoginOut;
 import com.sa.util.ByteBufUtil;
 import com.sa.util.Constant;
 import com.sa.util.LogOutPrint;
-import com.sa.util.StringUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -206,7 +205,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 			throws Exception {
 		loginOut(ctx);
 
-		ServerManager.INSTANCE.ungisterUserContext(ctx);
+		Manager.INSTANCE.ungisterUserContext(ctx);
 		System.err.println("业务逻辑出错");
 		cause.printStackTrace();
 
@@ -232,7 +231,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 				} else {
 					loginOut(ctx);
 
-					ServerManager.INSTANCE.ungisterUserContext(ctx);
+					Manager.INSTANCE.ungisterUserContext(ctx);
 				}
 			}
 		}

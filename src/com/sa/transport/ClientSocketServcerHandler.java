@@ -84,7 +84,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		String strIp = ctx.channel().remoteAddress().toString();
 		String log = "channelInactive客户端"+strIp+"关闭1";
-		String logStr = loginOut(ctx,log);
+		String logStr = loginOut(ctx, log);
 		System.err.println(logStr);
 		//若是中心客户端 给出特别日志
 		/*if(){
@@ -115,9 +115,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
 			throws Exception {
-
 		String strIp = ctx.channel().remoteAddress().toString();
-		System.err.println("exceptionCaught:"+strIp+"业务逻辑出错");
+		System.err.println("exceptionCaught:"+strIp+"业务逻辑出错");// /192.168.9.10:14803
 		cause.printStackTrace();
 
 		Channel channel = ctx.channel();
@@ -153,8 +152,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
 					if (null != ce) {
 						log += "("+ce.getUserId()+")";
+						Manager.INSTANCE.ungisterUserId(ce.getUserId());
 					}
-					
 					System.err.println(log);
 					//若是中心客户端 给出特别日志
 					/*if(){
@@ -162,8 +161,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					}else{
 						
 					}*/
-					ServerManager.INSTANCE.ungisterUserContext(ctx);
-					
 				}
 			}
 		}
@@ -184,8 +181,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 				String roomId = ServerDataPool.dataManager.getUserRoomNo(ce.getUserId());
 
 				log += "["+roomId+"]("+ce.getUserId()+")";
-
-				//if(null!=roomId){
 					ServerLoginOut serverLoginOut = new ServerLoginOut();
 					serverLoginOut.setFromUserId(ce.getUserId());
 					serverLoginOut.setRoomId(roomId);
@@ -194,7 +189,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					serverLoginOut.setTransactionId(1111199999);
 			
 					serverLoginOut.execPacket();
-				//}
 			}
 		} catch (Exception e) {
 			System.err.print("退出异常");

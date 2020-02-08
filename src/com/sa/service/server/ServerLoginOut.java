@@ -8,7 +8,6 @@ import java.util.Objects;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
@@ -45,11 +44,11 @@ public class ServerLoginOut extends Packet{
 			/** 设置记录集选项 为 delete */
 			this.setOption(255, "deleted");
 		
-		//如果有中心，且不是中心
-		if(ConfManager.getIsCenter()&&!ConfManager.getCenterId().equals(this.getFromUserId())){
-			this.setToUserId("0");
+		/**是否是中心*/
+		if(!ConfManager.getCenterId().equals(this.getFromUserId())){
+			//this.setToUserId("0");
 			//轉發到中心只做業務處理 不再往服務器下發消息
-			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 		}
 
 		/** 实例化登出 下行 并执行 */
