@@ -1,19 +1,17 @@
 package com.sa.service.client;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.TreeMap;
 
-import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
 import com.sa.util.Constant;
 
-public class ClientLoginOut extends Packet {
+import io.netty.channel.ChannelHandlerContext;
+
+public class ClientLoginOut extends Packet {	
 
 	public ClientLoginOut() {
 	}
@@ -33,10 +31,10 @@ public class ClientLoginOut extends Packet {
 	}
 
 	@Override
-	public void execPacket() {
+	public void execPacket() {//中心才执行
 		try {
 			this.setToUserId(this.getFromUserId());
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 			if (null != ctx) {

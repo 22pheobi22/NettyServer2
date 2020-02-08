@@ -24,8 +24,7 @@ public enum LoginManager {
 	INSTANCE;
 
 	public void login(ChannelHandlerContext context, ServerLogin loginPact) {
-		String strIp = context.channel().remoteAddress().toString();
-		strIp = StringUtil.subStringIp(strIp);
+		String strIp = StringUtil.subStringIp(context.channel().remoteAddress().toString());
 		int code = 0;
 		String msg = "成功";
 		/** 获取 临时通道 状态*/

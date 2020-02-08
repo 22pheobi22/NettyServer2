@@ -34,7 +34,6 @@ public class DataManager {
 	/** 房间信息及相关处理*/
 	public static RedisDataManager redisDataManager = new RedisDataManager();
 
-
 	/** 获取 房间 空余 时长 */
 	public Integer getFreeRoom(String roomId) {
 		if(ConfManager.getIsRedis()){
