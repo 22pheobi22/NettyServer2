@@ -44,12 +44,12 @@ public class ClientResponecRoomRemove extends Packet {
 		try {
 			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
 
-			if(!ConfManager.getIsCenter()){
-				/** 删除房间消息缓存*/
+			/*if(!ConfManager.getIsCenter()){
+				*//** 删除房间消息缓存*//*
 				ServerDataPool.dataManager.cleanLogs(this.getRoomId());
-				/** 删除房间缓存*/
+				*//** 删除房间缓存*//*
 				ServerDataPool.dataManager.removeRoom(this.getRoomId());
-			}else{
+			}else{*/
 				Room room = JSONObject.parseObject((String) this.getOption(2), Room.class);
 				Map<String, People> peoplesMap = room.getPeoples();
 				for (Entry<String, People> people : peoplesMap.entrySet()) {
@@ -61,10 +61,11 @@ public class ClientResponecRoomRemove extends Packet {
 						if(list.size()>0){
 							continue;
 						}
+						//System.out.println("@@@@@@@@@@"+userId);
 					}
 					ServerDataPool.dataManager.removeUserChannel(userId);
 				}
-			}
+			//}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
