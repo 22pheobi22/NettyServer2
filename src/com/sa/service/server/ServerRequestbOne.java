@@ -17,8 +17,8 @@ package com.sa.service.server;
 import java.util.Map;
 
 import com.sa.base.ConfManager;
+import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
@@ -46,7 +46,7 @@ public class ServerRequestbOne extends Packet {
 
 			if (ConfManager.getIsCenter()) {
 				/** 发送 到中心 */
-				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (roomIds != null && roomIds.length > 0) {
