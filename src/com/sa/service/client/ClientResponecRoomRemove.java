@@ -42,9 +42,9 @@ public class ClientResponecRoomRemove extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/*Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
+			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S);
 
-			if(!ConfManager.getIsCenter()){
+			/*if(!ConfManager.getIsCenter()){
 				*//** 删除房间消息缓存*//*
 				ServerDataPool.dataManager.cleanLogs(this.getRoomId());
 				*//** 删除房间缓存*//*
