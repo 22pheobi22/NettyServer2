@@ -21,8 +21,6 @@ public class JedisUtil {
     public static ReentrantLock lock = new ReentrantLock();
     private final String DIST_LOCK_SUCCESS = "OK";
     private final Long DIST_LOCK_RELEASE_SUCCESS = 1L;
-    private final String SET_IF_NOT_EXIST = "NX";
-    private final String SET_WITH_EXPIRE_TIME = "PX";
     private JedisPoolUtil jedisPool = new JedisPoolUtil();
 
     public boolean setString(String key, String value) {
@@ -75,7 +73,8 @@ public class JedisUtil {
     public String getString(String key) {
         Jedis jedis = jedisPool.getJedis();
         try {
-            return jedis.get(key);
+        	String str = jedis.get(key);
+            return str;
         } catch (Exception e) {
             logger.debug("getString() key {} throws:{}", key,e.getMessage());
             return null;
