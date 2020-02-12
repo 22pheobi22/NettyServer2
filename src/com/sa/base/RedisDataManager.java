@@ -265,16 +265,17 @@ public class RedisDataManager {
 	public void removeUserChannel(String userId) {// --移除各server上用户channel
 
 		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-
+		System.out.println("remove"+userId);
 		if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
 			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 		}
 		if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
 			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
 		}
-
+		System.out.println("before close"+userId);
 		if (null != ctx) {
 			ctx.close();
+			System.out.println("close"+userId);
 		}
 	}
 
@@ -987,5 +988,13 @@ public class RedisDataManager {
 			}
 		}
 		return serverList;
+	}
+
+	public String getCenterMasterAddress() {
+		List<String> hashValsAll = jedisUtil.getHashValsAll("centerRoleInfo");
+		if(hashValsAll==null||hashValsAll.size()<=0){
+			return jedisUtil.getHash("centerRoleInfo", "master");
+		}
+		return null;
 	}
 }

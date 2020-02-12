@@ -16,6 +16,10 @@ public class StringUtil {
 	public static String subStringIp(String str) {
 		return str.substring(str.indexOf("/")+1,str.indexOf(":"));
 	}
+	
+	public static String subStringAddress(String str) {
+		return str.substring(str.indexOf("/")+1,str.length());
+	}
 
 	public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
