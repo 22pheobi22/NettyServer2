@@ -514,4 +514,12 @@ public class DataManager {
 		}
 		return null;
 	}
+
+	public String getCenterMasterAddress() {
+		if(ConfManager.getIsRedis()){
+			return redisDataManager.getCenterMasterAddress();
+		}else{
+		}
+		return null;
+	}
 }
