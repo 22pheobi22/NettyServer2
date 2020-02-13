@@ -14,7 +14,10 @@
  */
 package com.sa.service.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -33,13 +36,15 @@ public class ClientResponecRemove extends Packet {
 	}
 
 	@Override
-	public void execPacket() {//有中心此方法不執行
-		/** 发送被迫下线通知*/
+	public void execPacket() {
+		/*//有中心此方法不執行
+		*//** 发送被迫下线通知*//*
 		offline();
-		/** 移除用户*/
+		*//** 移除用户*//*
 		ServerDataPool.dataManager.removeRoomUser(this.getRoomId(), this.getToUserId());
-		/** 通知被踢用户*/
-		noticeUser();
+		*//** 通知被踢用户*//*
+		noticeUser();*/	
+		ServerDataPool.dataManager.removeUserChannel(this.getToUserId());
 	}
 
 	@Override
