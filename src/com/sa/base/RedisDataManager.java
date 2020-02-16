@@ -289,11 +289,13 @@ public class RedisDataManager {
 		for (String key : keysAll) {
 			String roomId = key.replace(ROOM_INFO_MAP_KEY, "");
 			String roomStr = jedisUtil.getString(key);
-			Room room = JSON.parseObject(roomStr, Room.class);
-			// 如果房间里有符合userid的人
-			if (null != room.getPeoples().get(userId)) {
-				// 将用户从聊天室踢出
-				removeRoomUser(roomId, userId);
+			if(null!=roomStr){
+				Room room = JSON.parseObject(roomStr, Room.class);
+				// 如果房间里有符合userid的人
+				if (null != room.getPeoples().get(userId)) {
+					// 将用户从聊天室踢出
+					removeRoomUser(roomId, userId);
+				}
 			}
 		}
 	}
@@ -460,8 +462,10 @@ public class RedisDataManager {
 		for (String key : keysAll) {
 			String roomId = key.replace(ROOM_INFO_MAP_KEY, "");
 			String roomStr = jedisUtil.getString(key);
-			Room room = JSON.parseObject(roomStr, Room.class);
-			keys.add(roomId + "[" + room.getPeopleNum() + "]");
+			if(null!=roomStr){
+				Room room = JSON.parseObject(roomStr, Room.class);
+				keys.add(roomId + "[" + room.getPeopleNum() + "]");
+			}
 		}
 		return keys;
 	}
@@ -724,10 +728,12 @@ public class RedisDataManager {
 		Set<String> keysAll = jedisUtil.scanKeys(ROOM_INFO_MAP_KEY + "*");
 		for (String key : keysAll) {
 			String roomStr = jedisUtil.getString(key);
-			Room room = JSON.parseObject(roomStr, Room.class);
-			// 如果如果用户信息不为空
-			if (null!=room&&null != room.getPeoples().get(userId)) {
-				roomId += (key.replace(ROOM_INFO_MAP_KEY, "") + ",");
+			if(null!=roomStr){
+				Room room = JSON.parseObject(roomStr, Room.class);
+				// 如果如果用户信息不为空
+				if (null!=room&&null != room.getPeoples().get(userId)) {
+					roomId += (key.replace(ROOM_INFO_MAP_KEY, "") + ",");
+				}
 			}
 		}
 
@@ -743,10 +749,12 @@ public class RedisDataManager {
 		for (String key : keysAll) {
 			String roomId = key.replace(ROOM_INFO_MAP_KEY, "");
 			String roomStr = jedisUtil.getString(key);
-			Room room = JSON.parseObject(roomStr, Room.class);
-			int peopleNum = room.getPeopleNum();
-
-			roomInfoMap.put(roomId, peopleNum);
+			if(null!=roomStr){
+				Room room = JSON.parseObject(roomStr, Room.class);
+				int peopleNum = room.getPeopleNum();
+				
+				roomInfoMap.put(roomId, peopleNum);
+			}
 		}
 		return roomInfoMap;
 	}
