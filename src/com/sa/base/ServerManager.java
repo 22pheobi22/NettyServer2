@@ -192,6 +192,17 @@ public enum ServerManager {
 			// 抛出通道为空的异常
 			throw new NullPointerException("context is null");
 		}
+		//中心主备替换二次连接时关闭之前通道并移除信息重新保存
+		if(ConfManager.getCenterId().equals(userId)){
+			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
+				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+				if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
+					ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+					ctx.close();
+				}
+				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+			}
+		}
 		
 		// 缓存 用户-通道信息
 		ServerDataPool.USER_CHANNEL_MAP.put(userId,context);
