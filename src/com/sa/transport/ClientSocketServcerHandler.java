@@ -152,7 +152,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
 					Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
 					addUserOvertime(ctx);
-				} else {
 					String log = "客户端"+strIp+"超时踢下线";
 					//String log = "客户端超时踢下线";
 					ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
