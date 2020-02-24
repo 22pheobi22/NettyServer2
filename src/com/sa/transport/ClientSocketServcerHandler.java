@@ -148,25 +148,27 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 			if (e.state() == IdleState.READER_IDLE) {
 				System.err.println("客户端"+strIp+"读超时");
 				//System.err.println("客户端读超时");
-				int overtimeTimes = clientOvertimeMap.get(ctx);
-				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
-					Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
-					addUserOvertime(ctx);
-				} else {
-					String log = "客户端"+strIp+"超时踢下线";
-					//String log = "客户端超时踢下线";
-					ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
-					if (null != ce) {
-						log += "("+ce.getUserId()+")";
-						Manager.INSTANCE.ungisterUserId(ce.getUserId());
-					}
-					System.err.println(log);
-					//若是中心客户端 给出特别日志
-					/*if(){
+				if(null!=clientOvertimeMap&&clientOvertimeMap.size()>0){
+					int overtimeTimes = clientOvertimeMap.get(ctx);
+					if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
+						Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
+						addUserOvertime(ctx);
+					} else {
+						String log = "客户端"+strIp+"超时踢下线";
+						//String log = "客户端超时踢下线";
+						ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
+						if (null != ce) {
+							log += "("+ce.getUserId()+")";
+							Manager.INSTANCE.ungisterUserId(ce.getUserId());
+						}
+						System.err.println(log);
+						//若是中心客户端 给出特别日志
+						/*if(){
 						System.err.println(log);	
 					}else{
 						
 					}*/
+					}
 				}
 			}
 		}
