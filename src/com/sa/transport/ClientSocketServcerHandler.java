@@ -62,21 +62,20 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	}
 
-	/*public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
+	public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
 		StringBuilder log = new StringBuilder().append("TCP closed...");
 		log.append(loginOut(ctx,log));
 		System.err.println(log.toString());
 		//若是中心客户端 给出特别日志
-		if(){
+		/*if(){
 			System.err.println(log);	
 		}else{
 			
-		}
+		}*/
 		if(null!=ctx){
-			log.append(StringUtil.subStringAddress(ctx.channel().remoteAddress().toString()))
 			ctx.close(promise);			
 		}
-	}*/
+	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
@@ -148,24 +147,26 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 			if (e.state() == IdleState.READER_IDLE) {
 				System.err.println("客户端"+strIp+"读超时");
 				//System.err.println("客户端读超时");
-				int overtimeTimes = clientOvertimeMap.get(ctx);
-				if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
-					Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
-					addUserOvertime(ctx);
-					String log = "客户端"+strIp+"超时踢下线";
-					//String log = "客户端超时踢下线";
-					ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
-					if (null != ce) {
-						log += "("+ce.getUserId()+")";
-						Manager.INSTANCE.ungisterUserId(ce.getUserId());
-					}
-					System.err.println(log);
-					//若是中心客户端 给出特别日志
-					/*if(){
-						System.err.println(log);	
-					}else{
+				if(null!=clientOvertimeMap&&clientOvertimeMap.size()>0){
+					int overtimeTimes = clientOvertimeMap.get(ctx);
+					if (overtimeTimes < ConfManager.getMaxReconnectTimes()) {
+						Manager.INSTANCE.sendPacketTo(new ClientHeartBeat(), ctx, null);
+						addUserOvertime(ctx);
+						String log = "客户端"+strIp+"超时踢下线";
+						//String log = "客户端超时踢下线";
+						ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
+						if (null != ce) {
+							log += "("+ce.getUserId()+")";
+							Manager.INSTANCE.ungisterUserId(ce.getUserId());
+						}
+						System.err.println(log);
+						//若是中心客户端 给出特别日志
+						/*if(){
+							System.err.println(log);	
+						}else{
 						
-					}*/
+						}*/
+					}
 				}
 			}
 		}
