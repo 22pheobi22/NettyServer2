@@ -30,7 +30,7 @@ public class SysCloseRoomReq extends Packet {
 		ServerDataPool.dataManager.removeRoom(roomId);
 		/** 删除 房间 空闲 计数 缓存 */
 		ServerDataPool.dataManager.cancelFreeRoom(roomId);
-
+		
 		SysCloseRoomRes sysCloseRoomRes = new SysCloseRoomRes();
 		sysCloseRoomRes.setPacketHead(this.getPacketHead());
 		sysCloseRoomRes.setOptions(this.getOptions());

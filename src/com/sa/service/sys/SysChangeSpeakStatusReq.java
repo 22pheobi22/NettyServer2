@@ -12,10 +12,16 @@
  */
 package com.sa.service.sys;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import com.sa.base.ServerDataPool;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
+import com.sa.service.client.ClientMsgReceipt;
+import com.sa.util.Constant;
 
 public class SysChangeSpeakStatusReq extends Packet {
 
@@ -34,9 +40,37 @@ public class SysChangeSpeakStatusReq extends Packet {
 			for (String tmp : arr) {
 				if ("0".equals(auth)) {
 					People people = ServerDataPool.dataManager.notSpeakAuth(roomId, tmp);
+					
+					if(Objects.nonNull(people)){
+						/** 重写返回值*/
+						Map<String, Object> result2 = new HashMap<>();
+
+						result2.put("code", 10095);
+						result2.put("msg", Constant.ERR_CODE_10095);
+						/** 实例化消息回执 并 赋值 并 执行*/
+						ClientMsgReceipt cm = new ClientMsgReceipt(this.getPacketHead(), result2);
+						cm.setToUserId(tmp);
+						cm.setRoomId(roomId);
+						cm.execPacket();
+					}
 				} else if ("1".equals(auth)) {
 					People people = ServerDataPool.dataManager.speakAuth(roomId, tmp);
 					msg = "解除禁言成功";
+					
+					/** 如果目标用户为空 */
+					if (null != people) {
+						/** 重写返回值 */
+						Map<String, Object> result2 = new HashMap<>();
+
+						result2.put("code", 10096);
+						result2.put("msg", Constant.ERR_CODE_10096);
+						/** 实例化消息回执 并 赋值 并 执行 */
+						ClientMsgReceipt cm = new ClientMsgReceipt(this.getPacketHead(), result2);
+						cm.setToUserId(tmp);
+						cm.setRoomId(roomId);
+						cm.execPacket();
+						/** 如果有中心 并 目标IP不是中心IP */
+					}
 				}
 			}
 		}

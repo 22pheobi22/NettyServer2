@@ -242,7 +242,17 @@ public class RedisDataManager {
 				ctx.close();
 			}
 		}
+		
+		cleanRoomCache(roomId);
+		
 		return room;
+	}
+	
+	public void cleanRoomCache(String roomId){
+		if(roomId!=null&&roomId!=""){
+			String key=ROOM_INFO_MAP_KEY+roomId;
+			jedisUtil.delString(key);
+		}
 	}
 
 	/*
