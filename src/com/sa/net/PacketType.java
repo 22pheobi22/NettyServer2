@@ -67,6 +67,12 @@ import com.sa.service.sys.SysLoginReq;
 import com.sa.service.sys.SysLoginRes;
 import com.sa.service.sys.SysReloadConfigReq;
 import com.sa.service.sys.SysReloadConfigRes;
+import com.sa.service.sys.SysSendMsgAllReq;
+import com.sa.service.sys.SysSendMsgAllRes;
+import com.sa.service.sys.SysSendMsgOneReq;
+import com.sa.service.sys.SysSendMsgOneRes;
+import com.sa.service.sys.SysSendMsgRoomReq;
+import com.sa.service.sys.SysSendMsgRoomRes;
 import com.sa.service.sys.SysUpdRoomReq;
 import com.sa.service.sys.SysUpdRoomRes;
 
@@ -152,7 +158,13 @@ public enum PacketType {
 	SysCloseStudentReq((short) 10015, SysCloseStudentReq.class),
 	SysCloseStudentRes((short) 10016, SysCloseStudentRes.class),
 	SysReloadConfigReq((short) 10017, SysReloadConfigReq.class),
-	SysReloadConfigRes((short) 10018, SysReloadConfigRes.class)
+	SysReloadConfigRes((short) 10018, SysReloadConfigRes.class),
+	SysSendMsgOneReq((short) 10019, SysSendMsgOneReq.class),
+	SysSendMsgOneRes((short) 10020, SysSendMsgOneRes.class),
+	SysSendMsgRoomReq((short) 10021, SysSendMsgRoomReq.class),
+	SysSendMsgRoomRes((short) 10022, SysSendMsgRoomRes.class),
+	SysSendMsgAllReq((short) 10023, SysSendMsgAllReq.class),
+	SysSendMsgAllRes((short) 10024, SysSendMsgAllRes.class)
 	;
 
 	private short type;	// 消息类型
