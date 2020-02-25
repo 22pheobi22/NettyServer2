@@ -243,7 +243,7 @@ public class RedisDataManager {
 			}
 		}
 		
-		cleanRoomCache(roomId);
+		//cleanRoomCache(roomId);
 		
 		return room;
 	}
