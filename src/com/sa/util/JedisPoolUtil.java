@@ -82,7 +82,7 @@ public class JedisPoolUtil {
                 sentinels.add(sentinel2);
                 sentinels.add(sentinel3);
                 // 名称 sentinel pool timeout
-                jedisPool = new JedisSentinelPool("mymaster", sentinels, config,2000,null,0);
+                jedisPool = new JedisSentinelPool("mymaster", sentinels, config,2000,null,6);
             } catch (Exception e) {
                 logger.debug("init redis pool failed : {}", e.getMessage());
             } finally {
