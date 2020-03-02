@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -42,6 +43,11 @@ public class RedisDataManager {
 	private String ROOM_FREE_MAP_KEY = "ROOM_FREE_MAP";
 	private String ROOM_INFO_MAP_KEY = "ROOM_INFO_MAP_";
 	private String USER_SERVERIP_MAP_KEY = "USER_SERVERIP_MAP";
+	
+	/**
+	 * 系统管理员
+	 */
+	private String IM_ADMIN_SYSTEM_SYS_USER = "im_admin_system_sys_user_";
 
 	/** 获取 房间 空余 时长 */
 	public Integer getFreeRoom(String roomId) {
@@ -242,7 +248,17 @@ public class RedisDataManager {
 				ctx.close();
 			}
 		}
+		
+		//cleanRoomCache(roomId);
+		
 		return room;
+	}
+	
+	public void cleanRoomCache(String roomId){
+		if(roomId!=null&&roomId!=""){
+			String key=ROOM_INFO_MAP_KEY+roomId;
+			jedisUtil.delString(key);
+		}
 	}
 
 	/*
@@ -853,6 +869,12 @@ public class RedisDataManager {
 		}
 
 		People people = this.getRoomUesr(roomId, userId);
+		if(Objects.isNull(people)){
+			people=getSystemUserByAccount(userId);
+			if(Objects.isNull(people)){
+				return;
+			}
+		}
 
 		Long sendTime = Long.parseLong(chatKey.substring(0, chatKey.indexOf(",")));
 
@@ -1004,5 +1026,34 @@ public class RedisDataManager {
 			return jedisUtil.getHash("centerRoleInfo", "master");
 		}
 		return null;
+	}
+	
+	/**
+	 * 获取系统管理员
+	 * @param account
+	 * @return
+	 */
+	public People getSystemUserByAccount(String account){
+		
+		String key=USER_SERVERIP_MAP_KEY+account;
+		String userStr = jedisUtil.getString(key);
+		if(userStr==null||userStr.equals("")){
+			return null;
+		}
+		
+		Map<String,Object> map=JSON.parseObject(userStr, Map.class);
+		if(map==null||map.size()==0){
+			return null;
+		}
+		
+		String name=(String) map.get("name");
+		
+		
+		People people=new People();
+		people.setUserId(account);
+		people.setName(name);
+		people.setIcon("");
+		
+		return people;
 	}
 }
