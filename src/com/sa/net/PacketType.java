@@ -73,6 +73,8 @@ import com.sa.service.sys.SysSendMsgOneReq;
 import com.sa.service.sys.SysSendMsgOneRes;
 import com.sa.service.sys.SysSendMsgRoomReq;
 import com.sa.service.sys.SysSendMsgRoomRes;
+import com.sa.service.sys.SysShareGetReq;
+import com.sa.service.sys.SysShareGetRes;
 import com.sa.service.sys.SysUpdRoomReq;
 import com.sa.service.sys.SysUpdRoomRes;
 
@@ -164,7 +166,9 @@ public enum PacketType {
 	SysSendMsgRoomReq((short) 10021, SysSendMsgRoomReq.class),
 	SysSendMsgRoomRes((short) 10022, SysSendMsgRoomRes.class),
 	SysSendMsgAllReq((short) 10023, SysSendMsgAllReq.class),
-	SysSendMsgAllRes((short) 10024, SysSendMsgAllRes.class)
+	SysSendMsgAllRes((short) 10024, SysSendMsgAllRes.class),
+	SysShareGetReq((short) 10025, SysShareGetReq.class),
+	SysShareGetRes((short) 10026, SysShareGetRes.class)
 	;
 
 	private short type;	// 消息类型
