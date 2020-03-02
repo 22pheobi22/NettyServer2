@@ -64,7 +64,10 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	public void close(ChannelHandlerContext ctx, ChannelPromise promise) {
 		StringBuilder log = new StringBuilder().append("TCP closed...");
-		log.append(loginOut(ctx,log));
+		if(null!=ctx){
+			log.append(loginOut(ctx,log));
+			ctx.close(promise);			
+		}
 		System.err.println(log.toString());
 		//若是中心客户端 给出特别日志
 		/*if(){
@@ -72,9 +75,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		}else{
 			
 		}*/
-		if(null!=ctx){
-			ctx.close(promise);			
-		}
 	}
 
 	@Override
@@ -83,8 +83,9 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		StringBuilder log = new StringBuilder().append("channelInactive客户端");
 		log.append(ctx.channel().remoteAddress().toString());
 		log.append("关闭1");
-		log.append(loginOut(ctx, log));
-		
+		if(null!=ctx){
+			log.append(loginOut(ctx, log));
+		}
 		System.err.println(log.toString());
 		//若是中心客户端 给出特别日志
 		/*if(){
@@ -101,9 +102,8 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		StringBuilder log = new StringBuilder().append("disconnect客户端");
 		log.append(ctx.channel().remoteAddress().toString());
 		log.append("关闭2");
-		log.append(loginOut(ctx, log));
-		
 		if(null!=ctx){
+			log.append(loginOut(ctx, log));
 			ctx.disconnect(promise);	
 		}
 		System.err.println(log.toString());
@@ -179,7 +179,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 		}
 		clientOvertimeMap.put(ctx, oldTimes + 1);
 	}
-	
+
 	private StringBuilder loginOut(ChannelHandlerContext ctx,StringBuilder log) {
 		try {
 			ChannelExtend ce = ServerDataPool.CHANNEL_USER_MAP.get(ctx);
@@ -197,7 +197,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					serverLoginOut.execPacket();
 			}
 		} catch (Exception e) {
-			System.err.print("退出异常");
+			System.err.println("退出异常");
 		}
 		return log;
 	}
