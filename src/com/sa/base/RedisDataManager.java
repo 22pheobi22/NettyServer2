@@ -747,7 +747,7 @@ public class RedisDataManager {
 			if(null!=roomStr){
 				Room room = JSON.parseObject(roomStr, Room.class);
 				// 如果如果用户信息不为空
-				if (null!=room&&null != room.getPeoples().get(userId)) {
+				if (null!=room&&room.getPeoples().containsKey(userId)) {
 					roomId += (key.replace(ROOM_INFO_MAP_KEY, "") + ",");
 				}
 			}
