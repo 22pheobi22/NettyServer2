@@ -99,38 +99,4 @@ public class ServerRequestcGag extends Packet {
 		}
 	}
 
-//	@Override
-//	public void execPacket() {
-//		/** 校验用户角色*/
-//		Map<String, Object> result = Permission.INSTANCE.checkUserRole(this.getRoomId(), this.getFromUserId(), Constant.ROLE_ASSISTANT);
-//		/** 如果校验成功*/
-//		if (0 == ((Integer) result.get("code"))) {
-//			/** 根据房间id和目标用户id获取用户信息*/
-//			String userId= this.getToUserId();
-//			People people =ServerDataPool.dataManager.notSpeakAuth(this.getRoomId(), this.getToUserId());
-//			/** 如果人员信息为空*/
-//			if (null != people) {
-//				Map<String, Object> result2 = new HashMap<>();
-//				
-//				result2.put("code", 10095);
-//				result2.put("msg", Constant.ERR_CODE_10095);
-//				/** 实例化消息回执 并 赋值 并 执行*/
-//				ClientMsgReceipt clientMsgReceipt = new ClientMsgReceipt(this.getPacketHead(), result2);
-//				clientMsgReceipt.setToUserId(userId);
-//				clientMsgReceipt.execPacket();
-//			}
-//			
-//			if (ConfManager.getIsCenter() && !ConfManager.getCenterIp().equals(this.getRemoteIp())) {
-//				if (null != people) {
-//					this.setStatus(10095);
-//				}
-//				
-//				this.setToUserId(userId);
-//				/** 转发到中心*/
-//				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-//			}
-//		}
-//		/** 实例化消息回执 并 赋值 并 执行*/
-//		new ClientMsgReceipt(this.getPacketHead(), result).execPacket();
-//	}
 }

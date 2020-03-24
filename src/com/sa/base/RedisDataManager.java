@@ -121,6 +121,12 @@ public class RedisDataManager {
 			share.setContent(value);
 		} else if ("n".equals(share.getType())) {
 			share.add(value);
+			if(null!=value){
+				String[] values = value.split("##");
+				for (String v : values) {
+					share.add(v);
+				}
+			}
 		}
 		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
 	}

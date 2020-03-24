@@ -46,7 +46,6 @@ public class ServerLoginOut extends Packet{
 		
 		/**是否是中心*/
 		if(!ConfManager.getCenterId().equals(this.getFromUserId())){
-			//this.setToUserId("0");
 			//轉發到中心只做業務處理 不再往服務器下發消息
 			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 		}

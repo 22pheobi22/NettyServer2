@@ -36,41 +36,45 @@ public class ServerRequestbRoomTeacher extends Packet {
 
 	@Override
 	public void execPacket() {
+		String[] roomIds = this.getRoomId().split(",");
+		if (null != roomIds && roomIds.length > 0) {
+			for (String rId : roomIds) {
+				/** 根据房间id获取房间内普通教师信息 */
+				Map<String, People> hm = ServerDataPool.dataManager.getRoomTeachers(rId);
 
-			/** 根据房间id获取房间内普通教师信息 */
-			Map<String, People> hm = ServerDataPool.dataManager.getRoomTeachers(this.getRoomId());
+				int index = 0;
+				String json = "[";
+				/** 遍历用户信息 */
+				for (Entry<String, People> people : hm.entrySet()) {
+					if (index % Constant.PEOPLE_NUM == 0)
+						json = "[";
+					index++;
 
-			int index = 0;
-			String json = "[";
-			/** 遍历用户信息 */
-			for (Entry<String, People> people : hm.entrySet()) {
-				if (index % Constant.PEOPLE_NUM == 0)
-					json = "[";
-				index++;
+					json += toJson(people);
 
-				json += toJson(people);
+					if ((index % Constant.PEOPLE_NUM == 0 || index == hm.size()) && json.length() > 1) {
+						json = json.substring(0, json.length() - 1);
 
-				if ((index % Constant.PEOPLE_NUM == 0 || index == hm.size()) && json.length() > 1) {
-					json = json.substring(0, json.length() - 1);
+						json += "]";
+						/** 实例化获取房间列表 下行 并赋值 */
+						ClientResponebRoomTeacher crru = new ClientResponebRoomTeacher(this.getPacketHead());
+						/** json格式的用户信息放入 选项 1 中 */
+						crru.setOption(1, json);
+						crru.setRoomId(rId);
+						/** 执行 */
+						crru.execPacket();
+					}
 
-					json += "]";
-					/** 实例化获取房间列表 下行 并赋值 */
-					ClientResponebRoomTeacher crru = new ClientResponebRoomTeacher(this.getPacketHead());
-					/** json格式的用户信息放入 选项 1 中 */
-					crru.setOption(1, json);
-					// crru.setRoomId(rId);
-					/** 执行 */
-					crru.execPacket();
 				}
-
 			}
+		}
 	}
 
 	private String toJson(Entry<String, People> people) {
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("{\"roomId\":\"" + people.getKey() + "\",\"id\":\"" + people.getValue().getUserId() + "\",\"name\":\"" + people.getValue().getName() + "\",\"icon\":\""
-				+ people.getValue().getIcon() + "\",\"role\":[");
+		sb.append("{\"roomId\":\"" + people.getKey() + "\",\"id\":\"" + people.getValue().getUserId() + "\",\"name\":\""
+				+ people.getValue().getName() + "\",\"icon\":\"" + people.getValue().getIcon() + "\",\"role\":[");
 		for (Iterator iter = people.getValue().getRole().iterator(); iter.hasNext();) {
 			sb.append("\"" + (String) iter.next()).append("\",");
 		}

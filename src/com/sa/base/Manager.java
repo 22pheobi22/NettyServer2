@@ -66,7 +66,7 @@ public enum Manager {
 	}
 
 	/**
-	 *  向所有在线用户发送数据包
+	 *  向所有在线用户发送数据包 包括發送者
 	 * @throws Exception
 	 */
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead) throws Exception{
@@ -82,11 +82,7 @@ public enum Manager {
 	 * @throws Exception
 	 */
 	public void sendPacketToAllUsers(Packet pact, String consoleHead) throws Exception{
-		/*if(ConfManager.getIsRedis()){
-			redisManager.sendPacketToAllUsers(pact, consoleHead);
-		}else{*/
-			serverManager.sendPacketToAllUsers(pact, consoleHead);
-		//}
+		serverManager.sendPacketToAllUsers(pact, consoleHead);
 	}
 
 	/**

@@ -49,7 +49,6 @@ public class ServerRequestcNotGag extends Packet {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
-						//this.setRoomId(rId);
 						if (null == this.getToUserId() || "".equals(this.getToUserId())) {
 							all(rId);
 						} else {

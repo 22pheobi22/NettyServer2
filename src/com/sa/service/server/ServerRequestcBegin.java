@@ -31,8 +31,6 @@ public class ServerRequestcBegin extends Packet {
 				/** 消息转发到中心*/
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 			} else {
-//				HashSet<String> roomRoles = getRole(this.getOption(1));
-//				ServerDataPool.serverDataManager.setRoomRole(this.getRoomId(), roomRoles, ConfManager.getRoomChat());
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
