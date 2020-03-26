@@ -46,13 +46,13 @@ public class DataManager {
 	/**
 	 * 获取共享
 	 */
-	public Map<String, Share> getShare(String roomId) {
+	/*public Map<String, Share> getShare(String roomId) {
 		if(ConfManager.getIsRedis()){
 			return redisDataManager.getShare(roomId);
 		}else{
 			return serverDataManager.getShare(roomId);
 		}
-	}
+	}*/
 
 	/**
 	 * 获取共享
@@ -123,11 +123,11 @@ public class DataManager {
 	/**
 	 * 移出共享
 	 */
-	public Object removeShare(String roomId, String key) {
+	public void removeShare(String roomId, String key) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeShare(roomId, key);
+			redisDataManager.removeShare(roomId, key);
 		}else{
-			return serverDataManager.removeShare(roomId, key);
+			serverDataManager.removeShare(roomId, key);
 		}
 	}
 

@@ -43,7 +43,8 @@ public class RedisDataManager {
 	private String ROOM_FREE_MAP_KEY = "ROOM_FREE_MAP";
 	private String ROOM_INFO_MAP_KEY = "ROOM_INFO_MAP_";
 	private String USER_SERVERIP_MAP_KEY = "USER_SERVERIP_MAP";
-	
+	private String SHARE_LIST_KEY = "SHARE_LIST";
+	private String ROOM_SHARE_KEY = "ROOM_SHARE_";
 	/**
 	 * 系统管理员
 	 */
@@ -65,12 +66,14 @@ public class RedisDataManager {
 	/**
 	 * 获取共享
 	 */
-	public Map<String, Share> getShare(String roomId) {
+	/*public Map<String, Share> getShare(String roomId) {
+		long s = System.currentTimeMillis();
 		// 根据roomid获取房间信息
 		Room room = this.getRoom(roomId);
-
+		long e = System.currentTimeMillis();
+		System.out.println("getShare:"+(e-s));
 		return room.getShare();
-	}
+	}*/
 
 	/**
 	 * 获取共享
@@ -91,60 +94,58 @@ public class RedisDataManager {
 	 * 获取共享
 	 */
 	public List<Object> getShareList(String roomId, String key) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
-
-		Share share = room.getShare().get(key);
-		if (null == share) {
-			return null;
+		List<String> rangeOfList = jedisUtil.getRangeOfList(ROOM_SHARE_KEY + roomId + "_" + key, 0, -1);
+		if (rangeOfList.size() >= 0) {
+			List<Object> shareList = new ArrayList<>();
+			shareList.addAll(rangeOfList);
+			return shareList;
 		}
-
-		return share.getListContent();
+		return null;
 	}
 
 	/**
 	 * 设置共享
 	 */
 	public void setShare(String roomId, String key, String value, String type) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
-
-		Map<String, Share> shareMap = room.getShare();
-
-		Share share = shareMap.get(key);
-		if (null == share) {
-			share = new Share(type);
-			shareMap.put(key, share);
-		}
-
-		if ("1".equals(share.getType())) {
-			share.setContent(value);
-		} else if ("n".equals(share.getType())) {
-			share.add(value);
-			if(null!=value){
+		if ("n".equals(type)) {
+			if (null != value) {
 				String[] values = value.split("##");
 				for (String v : values) {
-					share.add(v);
+					jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId+"_"+key, v);
 				}
+				jedisUtil.sadd(SHARE_LIST_KEY, key);
 			}
+		} else if ("1".equals(type)) {
+			// 根据roomid获取房间信息
+			Room room = this.getRoom(roomId);
+
+			Map<String, Share> shareMap = room.getShare();
+
+			Share share = shareMap.get(key);
+			if (null == share) {
+				share = new Share(type);
+				shareMap.put(key, share);
+			}
+			share.setContent(value);
+			jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
 		}
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
 	}
 
 	/**
 	 * 更新共享
 	 */
 	public int updateShare(String roomId, String key, String value, int index) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
 		int rs = 0;
-
-		Share share = room.getShare().get(key);
-		if (null != share) {
-			rs = share.updListContent(index, value);
+		long len = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
+		// key不存在或列表為空
+		if (len == 0) {
+			jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId + "_" + key, value);
+		} else if (index > len-1) {
+			rs = -1;
+			return rs;
+		} else {
+			jedisUtil.setEleOfListByIndex(ROOM_SHARE_KEY + roomId + "_" + key, index, value);
 		}
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
 		return rs;
 	}
 
@@ -152,16 +153,15 @@ public class RedisDataManager {
 	 * 更新共享
 	 */
 	public int updateShare(String roomId, String key, String oldValue, String newValue) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
 		int rs = 0;
-
-		Share share = room.getShare().get(key);
-		if (null != share) {
-			rs = share.updListContent(oldValue, newValue);
+		if (oldValue.equals(newValue)) {
+			return rs;
 		}
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
+		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
+		if(length==0){
+			return -1;
+		}
+		jedisUtil.replaceEleInList(ROOM_SHARE_KEY + roomId + "_" + key, oldValue, newValue);
 		return rs;
 	}
 
@@ -169,54 +169,69 @@ public class RedisDataManager {
 	 * 移出共享
 	 */
 	public int removeShare(String roomId, String key, String value) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
-
-		int rs = room.getShare().get(key).removeListContent(value);
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
-		return rs;
+		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
+		if(0==length){
+			return -1;
+		}
+		jedisUtil.removeEleFromList(ROOM_SHARE_KEY + roomId + "_" + key, 0, value);
+		return 0;
 	}
 
 	/**
 	 * 移出共享
 	 */
-	public Object removeShare(String roomId, String key) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
+	public void removeShare(String roomId, String key) {
+		boolean b = jedisUtil.setContain(SHARE_LIST_KEY, key);
+		if (b) {
+			jedisUtil.delString(ROOM_SHARE_KEY + roomId + "_" + key);
+		} else {
+			// 根据roomid获取房间信息
+			Room room = this.getRoom(roomId);
 
-		Object obj = room.getShare().remove(key);
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
-		return obj;
+			room.getShare().remove(key);
+			jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
+		}
 	}
 
 	/**
 	 * 移出共享
 	 */
 	public int removeShare(String roomId, String key, int index, int len) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
-
-		int rs = room.getShare().get(key).removeListContent(index, len);
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
+		int rs = 0;
+		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
+		if (length == 0) {
+			return -1;
+		}
+		if (index > length - 1) {
+			return -2;
+		}
+		if ((index + len - 1) > length - 1) {
+			return -3;
+		}
+		if (len < 0) {
+			return -3;
+		}
+		for (int i = 0; i < len; i++) {
+			jedisUtil.setEleOfListByIndex(ROOM_SHARE_KEY + roomId + "_" + key, index + i, "@#￥");
+		}
+		jedisUtil.removeEleFromList(ROOM_SHARE_KEY + roomId + "_" + key, 0, "@#￥");
 		return rs;
 	}
 
-	public void removeShare(String roomId, String key, String[] arr) {
-		// 根据roomid获取房间信息
-		Room room = this.getRoom(roomId);
-		Share share = room.getShare().get(key);
-
+	public int removeShare(String roomId, String key, String[] arr) {
+		int rs = 0;
+		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
+		if (length == 0) {
+			return -1;
+		}
 		Object[] index = sort_asc(arr);
 		for (int i = index.length - 1; i >= 0; i--) {
-			if (share.getListContent().size() > (int) index[i]) {
-				share.removeListContent((int) index[i]);
+			if (length > (int) index[i]) {
+				jedisUtil.setEleOfListByIndex(ROOM_SHARE_KEY + roomId + "_" + key, (int) index[i], "@#￥");
 			}
 		}
-		jedisUtil.setString(ROOM_INFO_MAP_KEY + roomId, JSON.toJSONString(room));
-
+		jedisUtil.removeEleFromList(ROOM_SHARE_KEY + roomId + "_" + key, 0, "@#￥");
+		return rs;
 	}
 
 	private Object[] sort_asc(String[] arr) {
