@@ -43,7 +43,7 @@ public class RedisDataManager {
 	private String ROOM_FREE_MAP_KEY = "ROOM_FREE_MAP";
 	private String ROOM_INFO_MAP_KEY = "ROOM_INFO_MAP_";
 	private String USER_SERVERIP_MAP_KEY = "USER_SERVERIP_MAP";
-	private String SHARE_LIST_KEY = "SHARE_LIST";
+	private String SHARE_LIST_KEY = "SHARE_KEY_LIST";
 	private String ROOM_SHARE_KEY = "ROOM_SHARE_";
 	/**
 	 * 系统管理员
@@ -76,7 +76,7 @@ public class RedisDataManager {
 	}*/
 
 	/**
-	 * 获取共享
+	 * 获取type=1的共享
 	 */
 	public Object getShare(String roomId, String key) {
 		// 根据roomid获取房间信息
@@ -91,11 +91,11 @@ public class RedisDataManager {
 	}
 
 	/**
-	 * 获取共享
+	 * 获取type=n的共享
 	 */
 	public List<Object> getShareList(String roomId, String key) {
 		List<String> rangeOfList = jedisUtil.getRangeOfList(ROOM_SHARE_KEY + roomId + "_" + key, 0, -1);
-		if (rangeOfList.size() >= 0) {
+		if (rangeOfList.size() > 0) {
 			List<Object> shareList = new ArrayList<>();
 			shareList.addAll(rangeOfList);
 			return shareList;
@@ -113,7 +113,7 @@ public class RedisDataManager {
 				for (String v : values) {
 					jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId+"_"+key, v);
 				}
-				jedisUtil.sadd(SHARE_LIST_KEY, key);
+				jedisUtil.addEleIntoSet(SHARE_LIST_KEY, key);
 			}
 		} else if ("1".equals(type)) {
 			// 根据roomid获取房间信息
@@ -132,12 +132,17 @@ public class RedisDataManager {
 	}
 
 	/**
-	 * 更新共享
+	 * 更新key對應集合指定索引処值為新值
+	 * @param roomId
+	 * @param key
+	 * @param value
+	 * @param index
+	 * @return
 	 */
 	public int updateShare(String roomId, String key, String value, int index) {
 		int rs = 0;
 		long len = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
-		// key不存在或列表為空
+		// key不存在或列表為空 則創建集合並添加元素到集合
 		if (len == 0) {
 			jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId + "_" + key, value);
 		} else if (index > len-1) {
@@ -150,13 +155,20 @@ public class RedisDataManager {
 	}
 
 	/**
-	 * 更新共享
+	 * 更新共享--替換集合共享中指定值為新值
+	 * @param roomId
+	 * @param key
+	 * @param oldValue
+	 * @param newValue
+	 * @return
 	 */
 	public int updateShare(String roomId, String key, String oldValue, String newValue) {
 		int rs = 0;
+		//更新值等於被更新值 不做處理
 		if (oldValue.equals(newValue)) {
 			return rs;
 		}
+		//集合長度為0 不處理
 		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
 		if(length==0){
 			return -1;
@@ -166,7 +178,7 @@ public class RedisDataManager {
 	}
 
 	/**
-	 * 移出共享
+	 * 移出key對應集合中指定值
 	 */
 	public int removeShare(String roomId, String key, String value) {
 		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
@@ -194,7 +206,7 @@ public class RedisDataManager {
 	}
 
 	/**
-	 * 移出共享
+	 * 移出集合共享中key對應的指定索引処指定長度的内容
 	 */
 	public int removeShare(String roomId, String key, int index, int len) {
 		int rs = 0;
@@ -211,6 +223,7 @@ public class RedisDataManager {
 		if (len < 0) {
 			return -3;
 		}
+		//先將要移除元素設置成特殊值，再統一移除
 		for (int i = 0; i < len; i++) {
 			jedisUtil.setEleOfListByIndex(ROOM_SHARE_KEY + roomId + "_" + key, index + i, "@#￥");
 		}
@@ -218,6 +231,13 @@ public class RedisDataManager {
 		return rs;
 	}
 
+	/**
+	 * 移除key對應共享集合中指定索引對應的值
+	 * @param roomId
+	 * @param key
+	 * @param arr
+	 * @return
+	 */
 	public int removeShare(String roomId, String key, String[] arr) {
 		int rs = 0;
 		long length = jedisUtil.getLengthOfList(ROOM_SHARE_KEY + roomId + "_" + key);
