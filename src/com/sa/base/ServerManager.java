@@ -191,14 +191,13 @@ public enum ServerManager {
 		}
 		//中心主备替换二次连接时关闭之前通道并移除信息重新保存
 		if(ConfManager.getCenterId().equals(userId)){
-			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
+			//if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-				if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
-					ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
-					ctx.close();
-				}
-				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
-			}
+				if(null==ctx){return;}
+				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+				ctx.close();
+			//}
 		}
 		
 		// 缓存 用户-通道信息
@@ -218,6 +217,9 @@ public enum ServerManager {
 	public void ungisterUserId(String userId) {
 		// 如果用户id不为空
 		if(userId  != null) {
+			// 删除用户-通道缓存
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+			System.out.println("用户【 "+userId + " 】注销");
 			// 获取用户通道信息
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 
@@ -225,21 +227,15 @@ public enum ServerManager {
 			if (null == ctx) {
 				return;
 			}
-			System.out.println("用户【 "+userId + " 】注销");
 			// 删除通道-用户缓存
 			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
-			// 删除用户-通道缓存
-			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 
 			// 如果不是中心用户id
 			if (!ConfManager.getCenterId().equals(userId)) {
 				// 删除房间内该用户信息
 				serverDataManager.removeRoomUser(userId);
 			}
-			if(null!=ctx){
-				// 通道关闭
-				ctx.close();
-			}
+			ctx.close();
 		}
 	}
 

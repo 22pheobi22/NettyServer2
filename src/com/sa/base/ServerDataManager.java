@@ -227,22 +227,15 @@ public class ServerDataManager {
 		Map<String, People> peoplesMap = room.getPeoples();
 		for (Entry<String, People> people : peoplesMap.entrySet()) {
 			String userId = people.getKey();
-			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);	
 			
-			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
-				ServerDataPool.USER_CHANNEL_MAP.remove(userId);	
-			}
-			if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
-				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);	
-			}
-
-			if(null!=ctx){
-				ctx.close();	
-			}
+			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
+			if(null==ctx) continue;
+			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);	
+			ctx.close();	
 		}
 		return room;
 	}
-
 	
 	/**
 	 * 注销聊天室
@@ -254,16 +247,13 @@ public class ServerDataManager {
 			String userId = people.getKey();
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 			
-			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
-				ServerDataPool.USER_CHANNEL_MAP.remove(userId);	
-			}
-			if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
-				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);	
-			}
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);	
+			
+			if(null==ctx)continue;
+			
+			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);	
 
-			if(null!=ctx){
-				ctx.close();	
-			}
+			ctx.close();	
 		}
 		return room;
 	}
