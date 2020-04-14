@@ -111,9 +111,9 @@ public class RedisDataManager {
 		if ("n".equals(type)) {
 			if (null != value) {
 				String[] values = value.split("##");
-				for (String v : values) {
-					jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId+"_"+key, v);
-				}
+				//for (String v : values) {
+					jedisUtil.addEleIntoList(ROOM_SHARE_KEY + roomId+"_"+key, values);
+				//}
 				jedisUtil.addEleIntoSet(SHARE_LIST_KEY, key);
 			}
 		} else if ("1".equals(type)) {

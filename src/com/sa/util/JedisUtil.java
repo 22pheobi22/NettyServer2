@@ -400,6 +400,23 @@ public class JedisUtil {
 	}
 
 	/**
+	 * 向列表中批量加入元素
+	 * @param key
+	 * @param values
+	 * @return 如果列表不存在，一个空列表会被创建并执行 RPUSH 操作。 当列表存在但不是列表类型时，返回一个错误。
+	 */
+	public void addEleIntoList(String key, String[] values) {
+		Jedis jedis = jedisPool.getJedis();
+		try {
+			jedis.rpush(key, values);
+		} catch (Exception e) {
+			logger.debug("addEleIntoList() key {} values {} throws:{}", key, values, e.getMessage());
+		} finally {
+			close(jedis);
+		}
+	}
+	
+	/**
 	 * 獲取指定範圍内元素
 	 * @param key
 	 * @param start 0表示第一個
