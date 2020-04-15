@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -276,16 +275,19 @@ public class RedisDataManager {
 
 		Map<String, People> peoplesMap = room.getPeoples();
 		for (Entry<String, People> people : peoplesMap.entrySet()) {
-			//userid定不为null
 			String userId = people.getKey();
-			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
-			
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-			
-			if(null==ctx) continue;
-			
-			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
-			ctx.close();
+
+			if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+				ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+			}
+			if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+				ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+			}
+
+			if (null != ctx) {
+				ctx.close();
+			}
 		}
 		
 		//cleanRoomCache(roomId);
@@ -318,16 +320,20 @@ public class RedisDataManager {
 	 * if (null != ctx) { ctx.close(); } } return room; }
 	 */
 	public void removeUserChannel(String userId) {// --移除各server上用户channel
-		ServerDataPool.USER_CHANNEL_MAP.remove(userId);
-		//System.out.println("remove"+userId);
-		
+
 		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-		if(null==ctx) return;
-		
-		ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
-		//System.out.println("before close"+userId);
-		ctx.close();
-		//System.out.println("close"+userId);
+		System.out.println("remove"+userId);
+		if (ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)) {
+			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
+		}
+		if (null != ctx && ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)) {
+			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+		}
+		System.out.println("before close"+userId);
+		if (null != ctx) {
+			ctx.close();
+			System.out.println("close"+userId);
+		}
 	}
 
 	/**

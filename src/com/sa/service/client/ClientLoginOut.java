@@ -36,13 +36,13 @@ public class ClientLoginOut extends Packet {
 			this.setToUserId(this.getFromUserId());
 			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 
-			ServerDataPool.USER_CHANNEL_MAP.remove(this.getFromUserId());
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
-			if(null==ctx){
-				return;
+			if (null != ctx) {
+				ctx.close();
 			}
-			ctx.close();
 			ServerDataPool.CHANNEL_USER_MAP.remove(ctx);
+			ServerDataPool.USER_CHANNEL_MAP.remove(this.getFromUserId());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
