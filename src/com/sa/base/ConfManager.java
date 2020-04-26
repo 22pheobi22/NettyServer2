@@ -46,6 +46,15 @@ public class ConfManager {
 
 		return Integer.parseInt(strPort);
 	}
+	
+	/** 给中心提供服务的端口 */
+	public static int getCenterSoketServerPort() {
+		String strPort = CONF_MAP.get("centersoket.server.port");
+
+		strPort = null == strPort || "".equals(strPort) ? "8280" : strPort;
+
+		return Integer.parseInt(strPort);
+	}
 
 	/** 服务器端口 */
 	public static int getWebSoketServerPort() {

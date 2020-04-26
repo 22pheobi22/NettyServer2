@@ -24,6 +24,7 @@ public enum LoginManager {
 	INSTANCE;
 
 	public void login(ChannelHandlerContext context, ServerLogin loginPact) {
+		System.err.println("服务收到登录："+loginPact.getFromUserId()+"  时间："+System.currentTimeMillis());
 		String strIp = StringUtil.subStringIp(context.channel().localAddress().toString());
 		int code = 0;
 		String msg = "成功";
@@ -54,6 +55,7 @@ public enum LoginManager {
 				}
 				role = validateResult;
 			}
+			System.err.println("服务结束外部校验："+loginPact.getFromUserId()+"  时间："+System.currentTimeMillis());
 			/** 格式化 用户角色 */
 			HashSet<String> userRole = toRole(role);
 			//进行角色校验  返回非空map 则验证失败 
@@ -65,7 +67,8 @@ public enum LoginManager {
 				clientLogin(loginPact, code, msg, role, context);
 				return;
 			}
-			
+			System.err.println("服务结束角色校验："+loginPact.getFromUserId()+"  时间："+System.currentTimeMillis());
+
 			SUniqueLogon uniqueLogon = new SUniqueLogon(loginPact.getPacketHead());
 			uniqueLogon.setOptions(loginPact.getOptions());
 			
@@ -75,6 +78,8 @@ public enum LoginManager {
 			//uniqueLogon.setRemoteIp(strIp);//設置本服務器IP
 			/** 转发 登录信息 上行 到中心 */
 			Manager.INSTANCE.sendPacketToCenter(uniqueLogon, Constant.CONSOLE_CODE_TS);
+			System.err.println("服务sendPacketToCenter："+loginPact.getFromUserId()+"  时间："+System.currentTimeMillis());
+
 		}else{
 			/**如果是中心连接*/
 			doLogin(loginPact.getFromUserId(),context,ce.getChannelType());

@@ -25,7 +25,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 
-public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
+public class CenterSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	// 客户端超时次数
 	private Map<ChannelHandlerContext, Integer> clientOvertimeMap = new ConcurrentHashMap<>();

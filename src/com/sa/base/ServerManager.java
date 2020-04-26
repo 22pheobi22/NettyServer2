@@ -87,7 +87,10 @@ public enum ServerManager {
 		// 获取服务端和中心的管道
 		ChannelHandlerContext targetContext = contextMap.get("0");
 		// 如果空则返回
-		if(targetContext == null) return;
+		if(targetContext == null){
+			System.err.println("服务与中心无连接");
+			return;
+		} 
 		// 在控制台打印消息
 		pact.printPacket(ConfManager.getConsoleFlag(), consoleHead, ConfManager.getFileLogFlag(), ConfManager.getFileLogPath());
 		// 记录操作日志

@@ -29,6 +29,7 @@ public class CUniqueLogon extends Packet {
 	
 	@Override
 	public void execPacket() {
+		System.err.println("服务收到CUniqueLogon："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
 		//普通用戶登錄後收到的消息有兩種情況，1.首登；2.重登
 		ChannelHandlerContext ctx =ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 		//2.重登-- 原通道發註銷回執 新通道發登陸成功下行
@@ -45,9 +46,11 @@ public class CUniqueLogon extends Packet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+			System.err.println("服务发送重登下行："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
 			//2.2注銷用戶通道信息
 			ServerManager.INSTANCE.ungisterUserContext(ctx);
+			System.err.println("服务注销上次登录："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 		}else{
 			//1.首登/踢出旧号后重登-- 發登陸成功的登錄下行消息
 			//新server通道
@@ -56,7 +59,11 @@ public class CUniqueLogon extends Packet {
 			if(null==context||null == ce || null == ce.getConnBeginTime()){
 				return;
 			}
+			System.err.println("服务重新注册开始："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 			doLogin(this.getFromUserId(),context,ce.getChannelType());
+			System.err.println("服务重新注册结束："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 		}
 	}
 	

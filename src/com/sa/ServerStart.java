@@ -3,6 +3,7 @@ package com.sa;
 import com.sa.base.ConfManager;
 import com.sa.thread.AutoCancelTempConnect;
 import com.sa.thread.MongoLogSync;
+import com.sa.transport.CenterSocketServcer;
 import com.sa.transport.ClientSocketServcer;
 import com.sa.transport.WebSocketServer;
 import com.sa.util.ReadConf;
@@ -39,6 +40,7 @@ public class ServerStart {
 
 	private static void startNetty() {
 		try {
+			new Thread(new CenterSocketServcer(ConfManager.getCenterSoketServerPort())).start();
 			new Thread(new ClientSocketServcer(ConfManager.getClientSoketServerPort())).start();
 			new WebSocketServer().bind(ConfManager.getWebSoketServerPort());
 		} catch (Exception e) {

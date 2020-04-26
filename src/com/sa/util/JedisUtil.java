@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ListPosition;
+import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Tuple;
@@ -31,7 +32,8 @@ public class JedisUtil {
 			jedis.set(key, value);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setString() key {} throws:{}", key, e.getMessage());
+			System.err.println("setString() key{"+key+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("setString() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -42,21 +44,30 @@ public class JedisUtil {
 	public Set<String> scanKeys(String key) {
 		Jedis jedis = jedisPool.getJedis();
 		Set<String> list = new HashSet<>();
-		String cursor = ScanParams.SCAN_POINTER_START;
-		boolean cycleIsFinished = false;
-
-		ScanParams scanParams = new ScanParams();
-		scanParams.count(5000);
-		scanParams.match(key + "*");
-		while (!cycleIsFinished) {
-			ScanResult<String> scanResult = jedis.scan(cursor, scanParams);
-			list.addAll(scanResult.getResult());
-			cursor = scanResult.getCursor();
-			if (cursor.equals("0")) {
-				cycleIsFinished = true;
+		try {
+			String cursor = ScanParams.SCAN_POINTER_START;
+			boolean cycleIsFinished = false;
+			
+			ScanParams scanParams = new ScanParams();
+			scanParams.count(5000);
+			scanParams.match(key + "*");
+			
+			while (!cycleIsFinished) {
+				ScanResult<String> scanResult = jedis.scan(cursor, scanParams);
+				list.addAll(scanResult.getResult());
+				cursor = scanResult.getCursor();
+				if (cursor.equals("0")) {
+					cycleIsFinished = true;
+				}
 			}
+			return list;
+		} catch (Exception e) {
+			System.err.println("scanKeys() key{"+key+"} 【"+e.getMessage()+"】");
+			//e.printStackTrace();
+			return list;
+		}finally {
+			close(jedis);
 		}
-		return list;
 	}
 
 	public boolean setStringEx(String key, int seconds, String value) {
@@ -65,7 +76,8 @@ public class JedisUtil {
 			jedis.setex(key, seconds, value);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setStringEx() key {} throws:{}", key, e.getMessage());
+			System.err.println("setStringEx() key{"+key+"} seconds{"+seconds+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("setStringEx() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -78,7 +90,8 @@ public class JedisUtil {
 			String str = jedis.get(key);
 			return str;
 		} catch (Exception e) {
-			logger.debug("getString() key {} throws:{}", key, e.getMessage());
+			System.err.println("getString() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getString() key {} throws:{}", key, e.getMessage());
 			return null;
 		} finally {
 			close(jedis);
@@ -91,7 +104,8 @@ public class JedisUtil {
 			jedis.del(key);
 			return true;
 		} catch (Exception e) {
-			logger.debug("delString() key {} throws:{}", key, e.getMessage());
+			System.err.println("delString() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("delString() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -104,7 +118,8 @@ public class JedisUtil {
             jedis.del(key);
             return true;
         } catch (Exception e) {
-            logger.debug("delString() key {} throws:{}", key,e.getMessage());
+        	System.err.println("delHash() key{"+key+"} 【"+e.getMessage()+"】");
+        	//logger.debug("delHash() key {} throws:{}", key,e.getMessage());
             return false;
         } finally {
             close(jedis);
@@ -117,7 +132,8 @@ public class JedisUtil {
 			jedis.hdel(key, mKey);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setHash() key {} throws:{}", key, e.getMessage());
+			System.err.println("delHash() key{"+key+"} mKey{"+mKey+"} 【"+e.getMessage()+"】");
+			//logger.debug("setHash() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -130,7 +146,8 @@ public class JedisUtil {
 			jedis.hset(key, mKey, mVal);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setHash() key {} throws:{}", key, e.getMessage());
+        	System.err.println("setHash() key{"+key+"} mKey{"+mKey+"} mVal{"+mVal+"} 【"+e.getMessage()+"】");
+			//logger.debug("setHash() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -142,7 +159,8 @@ public class JedisUtil {
 		try {
 			return jedis.hget(key, mKey);
 		} catch (Exception e) {
-			logger.debug("setHash() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getHash() key{"+key+"} mKey{"+mKey+"} 【"+e.getMessage()+"】");
+			//logger.debug("setHash() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -155,7 +173,8 @@ public class JedisUtil {
 			jedis.hmset(key, map);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setMHash() key {} throws:{}", key, e.getMessage());
+        	System.err.println("setHashMulti() key{"+key+"} map{"+map+"} 【"+e.getMessage()+"】");
+			//logger.debug("setHashMulti() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -167,7 +186,8 @@ public class JedisUtil {
 		try {
 			return jedis.hmget(key, members);
 		} catch (Exception e) {
-			logger.debug("getHashMulti() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getHashMulti() key{"+key+"} members{"+members+"} 【"+e.getMessage()+"】");
+			//logger.debug("getHashMulti() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -179,7 +199,8 @@ public class JedisUtil {
 		try {
 			return jedis.hgetAll(key);
 		} catch (Exception e) {
-			logger.debug("getHashAll() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getHashAll() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getHashAll() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -191,7 +212,8 @@ public class JedisUtil {
 		try {
 			return jedis.hvals(key);
 		} catch (Exception e) {
-			logger.debug("getHashValsAll() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getHashValsAll() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getHashValsAll() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -203,7 +225,8 @@ public class JedisUtil {
 		try {
 			return jedis.hkeys(key);
 		} catch (Exception e) {
-			logger.debug("getHashValsAll() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getHashKeysAll() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getHashValsAll() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -215,7 +238,8 @@ public class JedisUtil {
 		try {
 			return jedis.keys(key);
 		} catch (Exception e) {
-			logger.debug("getValsAll() key {} throws:{}", key, e.getMessage());
+        	System.err.println("getKeysAll() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getValsAll() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -228,7 +252,8 @@ public class JedisUtil {
 			jedis.zadd(key, score, mKey);
 			return true;
 		} catch (Exception e) {
-			logger.debug("addScoreSet() key {} throws:{}", key, e.getMessage());
+        	System.err.println("addScoreSet() key{"+key+"} mKey{"+mKey+"} score{"+score+"} 【"+e.getMessage()+"】");
+			//logger.debug("addScoreSet() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -241,7 +266,8 @@ public class JedisUtil {
 			jedis.zrem(key, mKey);
 			return true;
 		} catch (Exception e) {
-			logger.debug("delScoreSet() key {} throws:{}", key, e.getMessage());
+        	System.err.println("delScoreSet() key{"+key+"} mKey{"+mKey+"} 【"+e.getMessage()+"】");
+			//logger.debug("delScoreSet() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -254,7 +280,8 @@ public class JedisUtil {
 			jedis.zincrby(key, score, mKey);
 			return true;
 		} catch (Exception e) {
-			logger.debug("changeScoreSet() key {} throws:{}", key, e.getMessage());
+        	System.err.println("changeScoreSet() key{"+key+"} mKey{"+mKey+"} score{"+score+"} 【"+e.getMessage()+"】");
+			//logger.debug("changeScoreSet() key {} throws:{}", key, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -270,7 +297,8 @@ public class JedisUtil {
 				return jedis.zrevrange(key, start, end);
 			}
 		} catch (Exception e) {
-			logger.debug("listScoreSetString() key {} throws:{}", key, e.getMessage());
+        	System.err.println("listScoreSetString() key{"+key+"} start{"+start+"} end{"+end+"} asc{"+asc+"} 【"+e.getMessage()+"】");
+			//logger.debug("listScoreSetString() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -286,7 +314,8 @@ public class JedisUtil {
 				return jedis.zrevrangeWithScores(key, start, end);
 			}
 		} catch (Exception e) {
-			logger.debug("listScoreSetString() key {} throws:{}", key, e.getMessage());
+        	System.err.println("listScoreSetTuple() key{"+key+"} start{"+start+"} end{"+end+"} 【"+e.getMessage()+"】");
+			//logger.debug("listScoreSetString() key {} throws:{}", key, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -306,7 +335,8 @@ public class JedisUtil {
 		try {
 			return jedis.lindex(key, index);
 		} catch (Exception e) {
-			logger.debug("getEleOfListByIndex() key {} index {} throws:{}", key, index, e.getMessage());
+        	System.err.println("getEleOfListByIndex() key{"+key+"} index{"+index+"} 【"+e.getMessage()+"】");
+			//logger.debug("getEleOfListByIndex() key {} index {} throws:{}", key, index, e.getMessage());
 			return null;
 		} finally {
 			close(jedis);
@@ -330,8 +360,9 @@ public class JedisUtil {
 			}
 			return result;
 		} catch (Exception e) {
-			logger.debug("insertEleIntoList() key {} pivot {} insertValue {} throws:{}", key, pivot, insertValue,
-					e.getMessage());
+        	System.err.println("insertEleIntoList() key{"+key+"} pivot{"+pivot+"} insertValue{"+insertValue+"} 【"+e.getMessage()+"】");
+			/*logger.debug("insertEleIntoList() key {} pivot {} insertValue {} throws:{}", key, pivot, insertValue,
+					e.getMessage());*/
 			return false;
 		} finally {
 			close(jedis);
@@ -356,7 +387,8 @@ public class JedisUtil {
     			jedis.lrem(key, 1, oldValue);
     		}
         } catch (Exception e) {
-            logger.debug("replaceEleInList() key {} oldValue {} newValue {} throws:{}", key,oldValue,newValue,e.getMessage());
+        	System.err.println("replaceEleInList() key{"+key+"} oldValue{"+oldValue+"} newValue{"+newValue+"} 【"+e.getMessage()+"】");
+            //logger.debug("replaceEleInList() key {} oldValue {} newValue {} throws:{}", key,oldValue,newValue,e.getMessage());
         } finally {
             close(jedis);
         }
@@ -375,7 +407,8 @@ public class JedisUtil {
 			jedis.lset(key, index, value);
 			return true;
 		} catch (Exception e) {
-			logger.debug("setEleOfListByIndex() key {} index {} value {} throws:{}", key, index, value, e.getMessage());
+        	System.err.println("setEleOfListByIndex() key{"+key+"} index{"+index+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("setEleOfListByIndex() key {} index {} value {} throws:{}", key, index, value, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -393,7 +426,8 @@ public class JedisUtil {
 		try {
 			jedis.rpush(key, value);
 		} catch (Exception e) {
-			logger.debug("addEleIntoList() key {} value {} throws:{}", key, value, e.getMessage());
+        	System.err.println("addEleIntoList() key{"+key+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("addEleIntoList() key {} value {} throws:{}", key, value, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -410,7 +444,8 @@ public class JedisUtil {
 		try {
 			jedis.rpush(key, values);
 		} catch (Exception e) {
-			logger.debug("addEleIntoList() key {} values {} throws:{}", key, values, e.getMessage());
+        	System.err.println("addEleIntoList() key{"+key+"} values{"+values+"} 【"+e.getMessage()+"】");
+			//logger.debug("addEleIntoList() key {} values {} throws:{}", key, values, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -429,13 +464,69 @@ public class JedisUtil {
 		try {
 			list = jedis.lrange(key, start, end);
 		} catch (Exception e) {
-			logger.debug("getRangeOfList() key {} start {} end:{}", key, start, end, e.getMessage());
+        	System.err.println("getRangeOfList() key{"+key+"} start{"+start+"} end{"+end+"} 【"+e.getMessage()+"】");
+			//logger.debug("getRangeOfList() key {} start {} end:{}", key, start, end, e.getMessage());
 		} finally {
 			close(jedis);
 		}
 		return list;
 	}
 
+	public static void main(String[] args) {
+	    JedisPoolUtil jedisPool = new JedisPoolUtil();
+		Jedis jedis = jedisPool.getJedis();
+/*		int a = 0;
+		for (int i = 0; i < 100; i++) {
+			long t1 = System.currentTimeMillis();
+			//List<String> list = jedis.lrange("lll", 0, -1);
+			//String s = "{'command':'trail','content':{'color':0,'trail':[{'x':1.280263,'y':0.521127},{'x':1.236842,'y':0.542254},{'x':1.189474,'y':0.568662},{'x':1.148684,'y':0.586268},{'x':1.106579,'y':0.603873},{'x':1.052632,'y':0.619718},{'x':1.001316,'y':0.630282},{'x':0.960526,'y':0.639085},{'x':0.940789,'y':0.640845},{'x':0.935526,'y':0.642606},{'x':0.934211,'y':0.642606},{'x':0.944737,'y':0.635563},{'x':0.972368,'y':0.612676},{'x':1.006579,'y':0.588028},{'x':1.056579,'y':0.551056},{'x':1.107895,'y':0.514085},{'x':1.167105,'y':0.477113}],'type':'pencil','width':'0.0035','widthType':'1'},'domain':'draw','domain_id':2,'user_id':842}";
+			StringBuilder str = new StringBuilder();
+		for (int i = 0; i < 5000; i++) {
+			str.append(s);
+			jedis.lpush("ggg", s);
+		}
+			//jedis.lpush("lll", s);
+			long t2 = System.currentTimeMillis();
+			//System.out.println(str);
+			System.out.println(t2-t1);
+			System.out.println(list.size());
+			a+=(t2-t1);
+		}
+		
+		System.out.println((a/100+a%100));*/
+		
+        long start = System.currentTimeMillis();
+		String s = "{'command':'trail','content':{'color':0,'trail':[{'x':1.280263,'y':0.521127},{'x':1.236842,'y':0.542254},{'x':1.189474,'y':0.568662},{'x':1.148684,'y':0.586268},{'x':1.106579,'y':0.603873},{'x':1.052632,'y':0.619718},{'x':1.001316,'y':0.630282},{'x':0.960526,'y':0.639085},{'x':0.940789,'y':0.640845},{'x':0.935526,'y':0.642606},{'x':0.934211,'y':0.642606},{'x':0.944737,'y':0.635563},{'x':0.972368,'y':0.612676},{'x':1.006579,'y':0.588028},{'x':1.056579,'y':0.551056},{'x':1.107895,'y':0.514085},{'x':1.167105,'y':0.477113}],'type':'pencil','width':'0.0035','widthType':'1'},'domain':'draw','domain_id':2,'user_id':842}";
+		Pipeline pip = jedis.pipelined();
+		for (int i = 0; i < 10000; i++) {
+			String[] arr1= new String[50];
+        	for (int j = 0; j < 50; j++) {
+        		arr1[j]=s;	
+        	}
+			pip.lpush("mmm", s);
+		}
+		pip.sync();// 同步获取所有的回应
+
+        System.out.println(System.currentTimeMillis() - start);
+/*        start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+        	for (int j = 0; j < 50; j++) {
+        		//jedis.set(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        		jedis.lpush("nnn", s);
+        	}
+		}
+        System.out.println(System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+        	String[] arr1= new String[50];
+        	for (int j = 0; j < 50; j++) {
+        		arr1[j]=s;	
+        	}
+        	jedis.lpush("ooo", arr1);
+		}
+        System.out.println(System.currentTimeMillis() - start);*/
+    }
+	
 	/**
 	 * 向set集合中添加元素
 	 * @param key
@@ -446,7 +537,8 @@ public class JedisUtil {
 		try {
 			jedis.sadd(key, value);
 		} catch (Exception e) {
-			logger.debug("sadd() key {} value {}", key, value, e.getMessage());
+        	System.err.println("addEleIntoSet() key{"+key+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("addEleIntoSet() key {} value {}", key, value, e.getMessage());
 		} finally {
 			close(jedis);
 		}
@@ -463,7 +555,8 @@ public class JedisUtil {
 		try {
 			return jedis.sismember(key, value);
 		} catch (Exception e) {
-			logger.debug("setContain() key {} value {}", key, value, e.getMessage());
+        	System.err.println("setContain() key{"+key+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("setContain() key {} value {}", key, value, e.getMessage());
 			return false;
 		} finally {
 			close(jedis);
@@ -481,7 +574,8 @@ public class JedisUtil {
 		try {
 			return jedis.lrem(key, count, value);
 		} catch (Exception e) {
-			logger.debug("removeEleFromList() key {} count{} value {}", key, count, value, e.getMessage());
+        	System.err.println("removeEleFromList() key{"+key+"} count{"+count+"} value{"+value+"} 【"+e.getMessage()+"】");
+			//logger.debug("removeEleFromList() key {} count{} value {}", key, count, value, e.getMessage());
 			return -1;
 		} finally {
 			close(jedis);
@@ -498,7 +592,8 @@ public class JedisUtil {
 		try {
 			return jedis.llen(key);
 		} catch (Exception e) {
-			logger.debug("setContain() key {} ", key, e.getMessage());
+        	System.err.println("getLengthOfList() key{"+key+"} 【"+e.getMessage()+"】");
+			//logger.debug("getLengthOfList() key {} ", key, e.getMessage());
 			return -1;
 		} finally {
 			close(jedis);
@@ -519,7 +614,8 @@ public class JedisUtil {
 		} catch (Exception e) {
 			// logger.debug("getDistributedLock key {} throws:{}", lockKey,
 			// e.getMessage());
-			logger.debug("getDistributedLock throws {}", e);
+        	System.err.println("getDistributedLock() lockKey{"+lockKey+"} requestId{"+requestId+"} expireTime{"+expireTime+"} 【"+e.getMessage()+"】");
+			//logger.debug("getDistributedLock throws {}", e);
 		} finally {
 			close(jedis);
 		}
@@ -537,7 +633,8 @@ public class JedisUtil {
 			}
 			return false;
 		} catch (Exception e) {
-			logger.debug("releaseDistributedLock throws {}", e.getMessage());
+        	System.err.println("releaseDistributedLock() lockKey{"+lockKey+"} requestId{"+requestId+"} 【"+e.getMessage()+"】");
+			//logger.debug("releaseDistributedLock throws {}", e.getMessage());
 		} finally {
 			close(jedis);
 		}
