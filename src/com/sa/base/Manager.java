@@ -198,4 +198,9 @@ public enum Manager {
 			}
 		}
 	}
+
+	public void sendPacketToLocalServer(Packet packet, String consoleCodeTs) {
+		// TODO Auto-generated method stub
+		
+	}
 }

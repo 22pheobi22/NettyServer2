@@ -39,7 +39,7 @@ public class ClientResponebShareUpd extends Packet {
 					ClientResponebShareUpd clientResponebShareUpd = new ClientResponebShareUpd(this.getPacketHead(),this.getOptions());
 					clientResponebShareUpd.setRoomId(rId);
 					/** 发送消息给房间内所有用户*/
-					Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
+					Manager.INSTANCE.sendPacketToRoomAllUsers(clientResponebShareUpd, Constant.CONSOLE_CODE_S, clientResponebShareUpd.getFromUserId());
 				}
 			}
 		} catch (Exception e) {

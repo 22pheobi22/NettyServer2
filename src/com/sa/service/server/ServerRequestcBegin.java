@@ -30,6 +30,9 @@ public class ServerRequestcBegin extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 消息转发到中心*/
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				//本服務器處理
+				ClientResponecBegin clientResponecBegin = new ClientResponecBegin(this.getPacketHead());
+				clientResponecBegin.execPacket();
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {

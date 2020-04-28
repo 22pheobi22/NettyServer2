@@ -47,6 +47,9 @@ public class ServerRequestbRoom extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 转发给中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				//處理本服務上房間消息
+				ClientResponebRoom cr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
+				cr.execPacket();
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {

@@ -38,8 +38,15 @@ public class ServerRequestcApplyAuth extends Packet {
 	@Override
 	public void execPacket() {
 		if (ConfManager.getIsCenter()){
-			/** 发送 下行类型 到中心*/
-			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+			boolean b = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(), this.getToUserId());
+			if(!b){
+				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+			}else{
+				ClientResponecApplyAuth clientResponebApplyAuth = new ClientResponecApplyAuth(this.getPacketHead(),
+						this.getOptions());
+				/** 执行 一对一消息发送 下行 */
+				clientResponebApplyAuth.execPacket();
+			}
 		}else{
 			String[] roomIds = this.getRoomId().split(",");
 			if (null != roomIds && roomIds.length > 0) {

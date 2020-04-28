@@ -16,7 +16,9 @@ package com.sa.service.client;
 
 import java.util.TreeMap;
 
+import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
+import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketHeadInfo;
 import com.sa.net.PacketType;
@@ -42,19 +44,23 @@ public class ClientResponecApplyAuth extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/** 发送消息给目标用户*/
-			ServerManager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
-
-			/*String userId = this.getToUserId();
-			if (userId.endsWith("APP")) {
-				userId = userId.replace("APP", "");
-			} else {
-				userId += "APP";
+			String[] roomIds = this.getRoomId().split(",");
+			if (null != roomIds && roomIds.length > 0) {
+				for (String rId : roomIds) {
+					/** 根据房间id 和 目标用户id 获取 人员信息 */
+					People people = ServerDataPool.dataManager.getRoomUesr(rId, this.getToUserId());
+					/** 如果人员信息不为空 */
+					if (null != people) {
+						/** 实例化一对一消息类型 下行 并 赋值 */
+						ClientResponecApplyAuth clientResponebApplyAuth = new ClientResponecApplyAuth(this.getPacketHead(),
+								this.getOptions());
+						clientResponebApplyAuth.setRoomId(rId);
+						/** 执行 一对一消息发送 下行 */
+						/** 发送消息给目标用户*/
+						ServerManager.INSTANCE.sendPacketTo(clientResponebApplyAuth, Constant.CONSOLE_CODE_S);
+					}
+				}
 			}
-			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
-			if (null != ctx) {
-				ServerManager.INSTANCE.sendPacketTo(this, ctx, Constant.CONSOLE_CODE_S);
-			}*/
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

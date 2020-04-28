@@ -44,8 +44,16 @@ public class ServerRequestbAll extends Packet {
 		if (0 == ((Integer) result.get("code"))) {
 			/** 如果有中心 并且 中心不是目标地址*/
 			if (ConfManager.getIsCenter()) {
-				/** 转发到中心*/
-				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				try {
+					/** 转发到中心--中心发下行给本机外其他服务*/
+					Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+					/** 发送下行消息给本机*/
+					ClientResponebAll clientResponebAll = new ClientResponebAll(this.getPacketHead(), this.getOptions());
+					clientResponebAll.execPacket();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}else{
 				/** 实例化 发送全体消息 下行 并执行*/
 				ClientResponebAll clientResponebAll = new ClientResponebAll(this.getPacketHead(), this.getOptions());

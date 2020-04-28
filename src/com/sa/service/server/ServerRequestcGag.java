@@ -27,6 +27,7 @@ import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
+import com.sa.service.client.ClientResponecGag;
 import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
 
@@ -51,7 +52,6 @@ public class ServerRequestcGag extends Packet {
 		/** 如果校验成功*/
 		if (0 == ((Integer) result.get("code"))) {
 			if(!ConfManager.getIsCenter()){
-				
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
@@ -65,11 +65,11 @@ public class ServerRequestcGag extends Packet {
 			}else{
 				/** 转发到中心*/
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				//本服务器处理
+				ClientResponecGag cr = new ClientResponecGag(this.getPacketHead());
+				cr.execPacket();
 			}
-				
-
 		}
-
 	}
 	
 	private void one(String userId,String roomId) {
@@ -87,7 +87,6 @@ public class ServerRequestcGag extends Packet {
 			cm.setToUserId(userId);
 			cm.setRoomId(roomId);
 			cm.execPacket();
-		/** 如果有中心 并 目标IP不是中心IP*/
 		} 
 	}
 

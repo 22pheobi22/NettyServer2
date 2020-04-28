@@ -522,4 +522,8 @@ public class DataManager {
 		}
 		return null;
 	}
+	
+	public boolean checkSourceAndTargetServer(String fromUserId, String toUserId) {
+		return redisDataManager.checkSourceAndTargetServer(fromUserId,toUserId);
+	}
 }

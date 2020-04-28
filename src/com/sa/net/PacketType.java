@@ -24,6 +24,8 @@ import com.sa.service.client.ClientResponebShareUpdSelf;
 import com.sa.service.client.ClientResponecAgreeApplyAuth;
 import com.sa.service.client.ClientResponecApplyAuth;
 import com.sa.service.client.ClientResponecBegin;
+import com.sa.service.client.ClientResponecGag;
+import com.sa.service.client.ClientResponecNotGag;
 import com.sa.service.client.ClientResponecRemove;
 import com.sa.service.client.ClientResponecRoomRemove;
 import com.sa.service.client.ClientResponecShareRemove;
@@ -133,6 +135,8 @@ public enum PacketType {
 	ClientResponecShareRemove((short)407,ClientResponecShareRemove.class),	// 下行 共享删除
 	ClientResponecRoomRemove((short)408, ClientResponecRoomRemove.class),	// 下行 移出房间
 	ClientResponecBegin((short)409, ClientResponecBegin.class),	    // 下行 开课
+	ClientResponecGag((short)410, ClientResponecGag.class),	    // 下行 禁言
+	ClientResponecNotGag((short)411, ClientResponecNotGag.class),	    // 下行 解除禁言
 	ClientResponecRemove((short)412, ClientResponecRemove.class),	// 下行 踢人
 	ClientResponecApplyAuth((short)420, ClientResponecApplyAuth.class),	// 下行 申请开通权限
 	ClientResponecAgreeApplyAuth((short)421, ClientResponecAgreeApplyAuth.class),	// 下行 申请开通权限同意

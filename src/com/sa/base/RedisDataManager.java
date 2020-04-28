@@ -34,6 +34,7 @@ import com.sa.base.element.Room;
 import com.sa.base.element.Share;
 import com.sa.util.Constant;
 import com.sa.util.JedisUtil;
+import com.sa.util.StringUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -1096,5 +1097,18 @@ public class RedisDataManager {
 		people.setIcon("");
 		
 		return people;
+	}
+	
+	/**校驗發送和目標用戶是否在同一服務器*/
+	public boolean checkSourceAndTargetServer(String fromUserId, String toUserId) {
+		boolean b =false;
+		if(!StringUtil.isEmpty(fromUserId)&&!StringUtil.isEmpty(toUserId)){
+			String fromServerIp = getUserServerIp(fromUserId);
+			String toServerIp = getUserServerIp(fromUserId);
+			if(fromServerIp.equals(toServerIp)){
+				b=true;
+			}
+		}
+		return b;
 	}
 }

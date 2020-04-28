@@ -49,6 +49,11 @@ public class ServerRequestbShareUpd extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 转发消息到中心 */
 				ServerManager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				
+				//本服務共享處理
+				/** 实例化 变更共享 下行 并 赋值 并 执行 */
+				ClientResponebShareUpd clientResponebShareUpd = new ClientResponebShareUpd(this.getPacketHead(), this.getOptions());
+				clientResponebShareUpd.execPacket();
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
