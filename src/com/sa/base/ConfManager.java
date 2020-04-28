@@ -1,6 +1,8 @@
 package com.sa.base;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sa.util.StringUtil;
@@ -27,6 +29,13 @@ public class ConfManager {
 		strIp = null == strIp || "".equals(strIp) ? "127.0.0.1" : strIp;
 
 		return strIp;
+	}
+	/** 另一个中心的ip */
+	public static List<String> getCenterId() {
+		String centerIds = CONF_MAP.get("center.id");
+		centerIds = null == centerIds || "".equals(centerIds) ? "127.0.0.1" : centerIds;
+
+		return Arrays.asList(centerIds.split(";"));
 	}
 
 	// 获取另一个中心的端口

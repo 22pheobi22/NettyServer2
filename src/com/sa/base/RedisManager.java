@@ -137,7 +137,7 @@ public enum RedisManager {
 		// 如果用户id不为空
 		if (userId != null) {
 			// 如果不是中心用户id
-			if (!ConfManager.getCenterId().equals(userId)) {
+			if (!ConfManager.getCenterId().contains(userId)) {
 				// 删除房间内该用户信息
 				ServerDataPool.redisDataManager.removeRoomUser(userId);
 				return;

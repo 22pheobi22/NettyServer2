@@ -42,7 +42,7 @@ public enum LoginManager {
 		String role = (String) loginPact.getOption(2);
 		
 		/** 如果是客户端登录 */
-		if (!ConfManager.getCenterId().equals(loginPact.getFromUserId())) {
+		if (!ConfManager.getCenterId().contains(loginPact.getFromUserId())) {
 
 			/** 是否 启用 外部校验 */
 			boolean validEnable = ConfManager.getValidateEnable();

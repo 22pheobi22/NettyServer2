@@ -33,7 +33,7 @@ public class COffline extends Packet {
 
 	@Override
 	public void execPacket() {
-		if (this.getRemoteIp().equals(ConfManager.getCenterIp())) {
+		if(ConfManager.getCenterId().contains(this.getFromUserId())) {
 			ClientMsgReceipt mr = new ClientMsgReceipt(this.getTransactionId(), this.getRoomId(), this.getFromUserId(), 10098);
 			mr.setOption(254, Constant.ERR_CODE_10098);
 

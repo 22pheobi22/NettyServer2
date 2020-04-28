@@ -147,7 +147,7 @@ public enum ServerManager {
 		// 遍历用户-通道map
 		for (Entry<String, ChannelHandlerContext> ctx : ServerDataPool.USER_CHANNEL_MAP.entrySet()) {
 			// 将数据包发送给所有用户  中心除外
-			if (!ConfManager.getCenterId().equals(ctx.getKey())) {
+			if (!ConfManager.getCenterId().contains(ctx.getKey())) {
 				// 发消息
 				writeAndFlush(ctx.getValue(), pact);
 			}
@@ -171,7 +171,7 @@ public enum ServerManager {
 //		System.out.println(ServerDataPool.USER_CHANNEL_MAP.size() + "U C" + ServerDataPool.CHANNEL_USER_MAP.size());
 
 		// 如果用户不是中心
-		if (!ConfManager.getCenterId().equals(userId)) {
+		if (!ConfManager.getCenterId().contains(userId)) {
 			// 将用户信息缓存
 			String[] roomIds = roomId.split(",");
 			if(roomIds!=null&&roomIds.length>0){
@@ -193,7 +193,7 @@ public enum ServerManager {
 			throw new NullPointerException("context is null");
 		}
 		// 中心主备替换二次连接时关闭之前通道并移除信息重新保存
-		if(ConfManager.getCenterId().equals(userId)) {
+		if(ConfManager.getCenterId().contains(userId)) {
 			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
 				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 				if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
@@ -235,7 +235,7 @@ public enum ServerManager {
 			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 
 			// 如果不是中心用户id
-			if (!ConfManager.getCenterId().equals(userId)) {
+			if (!ConfManager.getCenterId().contains(userId)) {
 				// 删除房间内该用户信息
 				ServerDataPool.serverDataManager.removeRoomUser(userId);
 			}
@@ -275,7 +275,7 @@ public enum ServerManager {
 		// 遍历用户通道Map
 		for (Entry<String, ChannelHandlerContext> ctx : ServerDataPool.USER_CHANNEL_MAP.entrySet()) {
 			// 如果不是发信人且不是中心
-			if (!ConfManager.getCenterId().equals(ctx.getKey()) && !fromUserId.equals(ctx.getKey())) {
+			if (!ConfManager.getCenterId().contains(ctx.getKey()) && !fromUserId.equals(ctx.getKey())) {
 				// 发送消息
 				ctx.getValue().writeAndFlush(pact);
 			}
