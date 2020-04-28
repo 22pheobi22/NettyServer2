@@ -23,7 +23,7 @@ public class ServerHeartBeat extends Packet{
 		clientHeartBeat.setFromUserId(this.getToUserId());
 		clientHeartBeat.setToUserId(this.getFromUserId());
 
-		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getRemoteIp());
+		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 		ctx.writeAndFlush(clientHeartBeat);
 	}
 
