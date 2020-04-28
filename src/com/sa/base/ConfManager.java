@@ -109,28 +109,6 @@ public class ConfManager {
 		return Boolean.parseBoolean(strIsCenter);
 	}
 
-	/** 中心IP */
-	public static String getCenterIp() {
-		String strCenterIp = CONF_MAP.get("center.ip");
-
-		if (StringUtil.isEmpty(strCenterIp)) {
-			strCenterIp = "192.168.1.105";
-		}
-
-		return strCenterIp;
-	}
-
-	/** 中心ID */
-	public static String getCenterId() {
-		String strCenterId = CONF_MAP.get("center.id");
-
-		if (StringUtil.isEmpty(strCenterId) || !StringUtil.isInteger(strCenterId)) {
-			strCenterId = "0";
-		}
-
-		return strCenterId;
-	}
-
 	/** 间隔同步入库地址 */
 	public static String getLogUrl() {
 		return CONF_MAP.get("log.out.db.url");

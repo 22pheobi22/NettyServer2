@@ -83,8 +83,9 @@ public enum ServerManager {
 		Map<String, ChannelHandlerContext> contextMap  = ServerDataPool.USER_CHANNEL_MAP;
 		// 如果空则返回
 		if(StringUtil.isEmpty(contextMap)) return;
+		String masterAddr = ServerDataPool.redisDataManager.getCenterMasterAddress();
 		// 获取服务端和中心的管道
-		ChannelHandlerContext targetContext = contextMap.get("0");
+		ChannelHandlerContext targetContext = contextMap.get(masterAddr);
 		// 如果空则返回
 		if(targetContext == null){
 			System.err.println("服务与中心无连接");
@@ -191,8 +192,8 @@ public enum ServerManager {
 			// 抛出通道为空的异常
 			throw new NullPointerException("context is null");
 		}
-		//中心主备替换二次连接时关闭之前通道并移除信息重新保存
-		if(ConfManager.getCenterId().equals(userId)){
+		// 中心主备替换二次连接时关闭之前通道并移除信息重新保存
+		if(ConfManager.getCenterId().equals(userId)) {
 			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
 				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 				if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){

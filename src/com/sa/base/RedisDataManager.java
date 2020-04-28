@@ -46,6 +46,9 @@ public class RedisDataManager {
 	private String USER_SERVERIP_MAP_KEY = "USER_SERVERIP_MAP";
 	private String SHARE_LIST_KEY = "SHARE_KEY_LIST";
 	private String ROOM_SHARE_KEY = "ROOM_SHARE_";
+	private final String CENTER_MASTER_SLAVE_INFO = "CENTER_MASTER_SLAVE_INFO";
+	private final String MASTER = "MASTER";
+	private final String SLAVE = "SLAVE";
 	/**
 	 * 系统管理员
 	 */
@@ -1063,11 +1066,7 @@ public class RedisDataManager {
 	}
 
 	public String getCenterMasterAddress() {
-		List<String> hashValsAll = jedisUtil.getHashValsAll("centerRoleInfo");
-		if(hashValsAll==null||hashValsAll.size()<=0){
-			return jedisUtil.getHash("centerRoleInfo", "master");
-		}
-		return null;
+		return jedisUtil.getHash(CENTER_MASTER_SLAVE_INFO, MASTER);
 	}
 	
 	/**
