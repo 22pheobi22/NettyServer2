@@ -19,10 +19,9 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 public enum Manager {
 
 	INSTANCE;
+	
 	private static ExecutorService timelyLogExecutor = Executors.newSingleThreadExecutor();
 	
-	private static RedisManager redisManager = RedisManager.INSTANCE;
-	private static ServerManager serverManager = ServerManager.INSTANCE;
 	/**
 	 * 上一个达到立即保存日志线程的是否完毕 true为完毕 
 	 */
@@ -55,14 +54,14 @@ public enum Manager {
 	/** 向单一用户发送数据包*/
 	public void sendPacketTo(Packet pact, String consoleHead) throws Exception {
 		/*if(ConfManager.getIsRedis()){
-			redisManager.sendPacketTo(pact, consoleHead);
+			RedisManager.INSTANCE.sendPacketTo(pact, consoleHead);
 		}else{*/
-			serverManager.sendPacketTo(pact, consoleHead);
+			ServerManager.INSTANCE.sendPacketTo(pact, consoleHead);
 		//}
 	}
 	/** 向中心发送数据包*/
 	public void sendPacketToCenter(Packet pact, String consoleHead) {
-		serverManager.sendPacketToCenter(pact, consoleHead);
+		ServerManager.INSTANCE.sendPacketToCenter(pact, consoleHead);
 	}
 
 	/**
@@ -71,9 +70,9 @@ public enum Manager {
 	 */
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead) throws Exception{
 		if(ConfManager.getIsRedis()){
-			redisManager.sendPacketToRoomAllUsers(pact, consoleHead);
+			RedisManager.INSTANCE.sendPacketToRoomAllUsers(pact, consoleHead);
 		}else{
-			serverManager.sendPacketToRoomAllUsers(pact, consoleHead);
+			ServerManager.INSTANCE.sendPacketToRoomAllUsers(pact, consoleHead);
 		}
 	}
 
@@ -82,7 +81,7 @@ public enum Manager {
 	 * @throws Exception
 	 */
 	public void sendPacketToAllUsers(Packet pact, String consoleHead) throws Exception{
-		serverManager.sendPacketToAllUsers(pact, consoleHead);
+		ServerManager.INSTANCE.sendPacketToAllUsers(pact, consoleHead);
 	}
 
 	/**
@@ -117,9 +116,9 @@ public enum Manager {
 	 */
 	public void addOnlineContext(String roomId, String userId, String name, String icon, String agoraId, HashSet<String> userRole, boolean notSpeak, ChannelHandlerContext context, int channelType){
 		if(ConfManager.getIsRedis()){
-			redisManager.addOnlineContext(roomId, userId, name, icon, agoraId, userRole, notSpeak, context, channelType);
+			RedisManager.INSTANCE.addOnlineContext(roomId, userId, name, icon, agoraId, userRole, notSpeak, context, channelType);
 		}else{
-			serverManager.addOnlineContext(roomId, userId, name, icon, agoraId, userRole, notSpeak, context, channelType);
+			ServerManager.INSTANCE.addOnlineContext(roomId, userId, name, icon, agoraId, userRole, notSpeak, context, channelType);
 		}
 	}
 	
@@ -127,11 +126,11 @@ public enum Manager {
 	 * 登录、注册、上线、绑定--中心
 	 */
 	public void addOnlineContext(String userId,ChannelHandlerContext context, int channelType){
-		serverManager.addOnlineContext(userId, context, channelType);
+		ServerManager.INSTANCE.addOnlineContext(userId, context, channelType);
 	}
 	
 	public void ungisterUserInfo(String userId) {
-		redisManager.ungisterUserInfo(userId);
+		RedisManager.INSTANCE.ungisterUserInfo(userId);
 	}
 
 	/**
@@ -139,9 +138,9 @@ public enum Manager {
 	 */
 	public void ungisterUserId(String userId) {
 		if(ConfManager.getIsRedis()){
-			redisManager.ungisterUserId(userId);
+			RedisManager.INSTANCE.ungisterUserId(userId);
 		}else{
-			serverManager.ungisterUserId(userId);
+			ServerManager.INSTANCE.ungisterUserId(userId);
 		}
 	}
 
@@ -150,18 +149,18 @@ public enum Manager {
 	 */
 	public void ungisterUserContext(ChannelHandlerContext context) {
 		/*if(ConfManager.getIsRedis()){
-			//redisManager.ungisterUserContext(context);
+			//RedisManager.INSTANCE.ungisterUserContext(context);
 		}else{*/
-			serverManager.ungisterUserContext(context);
+			ServerManager.INSTANCE.ungisterUserContext(context);
 		//}
 	}
 
 	/** 想全体用户发送消息*/
 	public void sendPacketToAllUsers(Packet pact, String consoleHead, String fromUserId) {
 		/*if(ConfManager.getIsRedis()){
-			redisManager.sendPacketToAllUsers(pact,consoleHead,fromUserId);
+			RedisManager.INSTANCE.sendPacketToAllUsers(pact,consoleHead,fromUserId);
 		}else{*/
-			serverManager.sendPacketToAllUsers(pact,consoleHead,fromUserId);
+			ServerManager.INSTANCE.sendPacketToAllUsers(pact,consoleHead,fromUserId);
 		//}
 	}
 
@@ -171,9 +170,9 @@ public enum Manager {
 	 */
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead, String fromUserId) throws Exception{
 		if(ConfManager.getIsRedis()){
-			redisManager.sendPacketToRoomAllUsers(pact, consoleHead, fromUserId);
+			RedisManager.INSTANCE.sendPacketToRoomAllUsers(pact, consoleHead, fromUserId);
 		}else{
-			serverManager.sendPacketToRoomAllUsers(pact, consoleHead, fromUserId);
+			ServerManager.INSTANCE.sendPacketToRoomAllUsers(pact, consoleHead, fromUserId);
 		}
 	}
 

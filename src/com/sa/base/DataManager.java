@@ -2,7 +2,7 @@
  *
  * 项目名称:[NettyServer]
  * 包:	 [com.sa.base]
- * 类名称: [ServerDataManager]
+ * 类名称: [ServerDataPool.serverDataManager]
  * 类描述: [一句话描述该类的功能]
  * 创建人: [Y.P]
  * 创建时间:[2017年7月15日 上午11:15:22]
@@ -23,23 +23,17 @@ import java.util.Set;
 import com.sa.base.element.Logs;
 import com.sa.base.element.People;
 import com.sa.base.element.Room;
-import com.sa.base.element.Share;
 
 import io.netty.channel.ChannelHandlerContext;
 
 public class DataManager {
-	/** 房间信息及相关处理*/
-	public static ServerDataManager serverDataManager = new ServerDataManager();
-
-	/** 房间信息及相关处理*/
-	public static RedisDataManager redisDataManager = new RedisDataManager();
 
 	/** 获取 房间 空余 时长 */
 	public Integer getFreeRoom(String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getFreeRoom(roomId);
+			return ServerDataPool.redisDataManager.getFreeRoom(roomId);
 		}else{
-			return serverDataManager.getFreeRoom(roomId);
+			return ServerDataPool.serverDataManager.getFreeRoom(roomId);
 		}
 	}
 
@@ -48,9 +42,9 @@ public class DataManager {
 	 */
 	/*public Map<String, Share> getShare(String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getShare(roomId);
+			return ServerDataPool.redisDataManager.getShare(roomId);
 		}else{
-			return serverDataManager.getShare(roomId);
+			return ServerDataPool.serverDataManager.getShare(roomId);
 		}
 	}*/
 
@@ -59,9 +53,9 @@ public class DataManager {
 	 */
 	public Object getShare(String roomId, String key) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getShare(roomId, key);
+			return ServerDataPool.redisDataManager.getShare(roomId, key);
 		}else{
-			return serverDataManager.getShare(roomId, key);
+			return ServerDataPool.serverDataManager.getShare(roomId, key);
 		}
 	}
 
@@ -70,9 +64,9 @@ public class DataManager {
 	 */
 	public List<Object> getShareList(String roomId, String key) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getShareList(roomId,key);
+			return ServerDataPool.redisDataManager.getShareList(roomId,key);
 		}else{
-			return serverDataManager.getShareList(roomId,key);
+			return ServerDataPool.serverDataManager.getShareList(roomId,key);
 		}
 	}
 
@@ -81,9 +75,9 @@ public class DataManager {
 	 */
 	public void setShare(String roomId, String key, String value, String type) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setShare(roomId, key, value, type);
+			ServerDataPool.redisDataManager.setShare(roomId, key, value, type);
 		}else{
-			serverDataManager.setShare(roomId, key, value, type);
+			ServerDataPool.serverDataManager.setShare(roomId, key, value, type);
 		}
 	}
 
@@ -92,9 +86,9 @@ public class DataManager {
 	 */
 	public int updateShare(String roomId, String key, String value, int index) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.updateShare(roomId, key, value, index);
+			return ServerDataPool.redisDataManager.updateShare(roomId, key, value, index);
 		}else{
-			return serverDataManager.updateShare(roomId, key, value, index);
+			return ServerDataPool.serverDataManager.updateShare(roomId, key, value, index);
 		}
 	}
 
@@ -103,9 +97,9 @@ public class DataManager {
 	 */
 	public int updateShare(String roomId, String key, String oldValue, String newValue) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.updateShare(roomId, key, oldValue, newValue);
+			return ServerDataPool.redisDataManager.updateShare(roomId, key, oldValue, newValue);
 		}else{
-			return serverDataManager.updateShare(roomId, key, oldValue, newValue);
+			return ServerDataPool.serverDataManager.updateShare(roomId, key, oldValue, newValue);
 		}
 	}
 
@@ -114,9 +108,9 @@ public class DataManager {
 	 */
 	public int removeShare(String roomId, String key, String value) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeShare(roomId, key, value);
+			return ServerDataPool.redisDataManager.removeShare(roomId, key, value);
 		}else{
-			return serverDataManager.removeShare(roomId, key, value);
+			return ServerDataPool.serverDataManager.removeShare(roomId, key, value);
 		}
 	}
 
@@ -125,9 +119,9 @@ public class DataManager {
 	 */
 	public void removeShare(String roomId, String key) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.removeShare(roomId, key);
+			ServerDataPool.redisDataManager.removeShare(roomId, key);
 		}else{
-			serverDataManager.removeShare(roomId, key);
+			ServerDataPool.serverDataManager.removeShare(roomId, key);
 		}
 	}
 
@@ -136,17 +130,17 @@ public class DataManager {
 	 */
 	public int removeShare(String roomId, String key, int index, int len) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeShare(roomId, key, index, len);
+			return ServerDataPool.redisDataManager.removeShare(roomId, key, index, len);
 		}else{
-			return serverDataManager.removeShare(roomId, key, index, len);
+			return ServerDataPool.serverDataManager.removeShare(roomId, key, index, len);
 		}	
 	}	
 
 	public void removeShare(String roomId, String key, String[] arr) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.removeShare(roomId, key, arr);
+			ServerDataPool.redisDataManager.removeShare(roomId, key, arr);
 		}else{
-			serverDataManager.removeShare(roomId, key, arr);
+			ServerDataPool.serverDataManager.removeShare(roomId, key, arr);
 		}	
 	}
 
@@ -155,24 +149,24 @@ public class DataManager {
 	 */
 	public Room removeRoom(String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeRoom(roomId);
+			return ServerDataPool.redisDataManager.removeRoom(roomId);
 		}else{
-			return serverDataManager.removeRoom(roomId);
+			return ServerDataPool.serverDataManager.removeRoom(roomId);
 		}
 	}
 	
 	/*public Room removeRoom(Room room,String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeRoom(room,roomId);
+			return ServerDataPool.redisDataManager.removeRoom(room,roomId);
 		}else{
-			return serverDataManager.removeRoom(room,roomId);
+			return ServerDataPool.serverDataManager.removeRoom(room,roomId);
 		}
 	}*/
 	public void removeUserChannel(String userId) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.removeUserChannel(userId);
+			ServerDataPool.redisDataManager.removeUserChannel(userId);
 		}else{
-			//serverDataManager.removeUserChannel(userId);
+			//ServerDataPool.serverDataManager.removeUserChannel(userId);
 		}
 	}
 	/**
@@ -180,9 +174,9 @@ public class DataManager {
 	 */
 	public synchronized void removeRoomUser(String userId) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.removeRoomUser(userId);
+			ServerDataPool.redisDataManager.removeRoomUser(userId);
 		}else{
-			serverDataManager.removeRoomUser(userId);
+			ServerDataPool.serverDataManager.removeRoomUser(userId);
 		}
 	}
 
@@ -191,9 +185,9 @@ public class DataManager {
 	 */
 	public synchronized People removeRoomUser(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.removeRoomUser(roomId, userId);
+			return ServerDataPool.redisDataManager.removeRoomUser(roomId, userId);
 		}else{
-			return serverDataManager.removeRoomUser(roomId, userId);
+			return ServerDataPool.serverDataManager.removeRoomUser(roomId, userId);
 		}
 	}
 
@@ -202,9 +196,9 @@ public class DataManager {
 	 */
 	public People notSpeakAuth(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.notSpeakAuth(roomId, userId);
+			return ServerDataPool.redisDataManager.notSpeakAuth(roomId, userId);
 		}else{
-			return serverDataManager.notSpeakAuth(roomId, userId);
+			return ServerDataPool.serverDataManager.notSpeakAuth(roomId, userId);
 		}
 	}
 
@@ -213,9 +207,9 @@ public class DataManager {
 	 */
 	public People speakAuth(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.speakAuth(roomId, userId);
+			return ServerDataPool.redisDataManager.speakAuth(roomId, userId);
 		}else{
-			return serverDataManager.speakAuth(roomId, userId);
+			return ServerDataPool.serverDataManager.speakAuth(roomId, userId);
 		}
 	}
 
@@ -224,9 +218,9 @@ public class DataManager {
 	 */
 	public void removeRoomAuth(String roomId, HashSet<String> roomRoles) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.removeRoomAuth(roomId, roomRoles);
+			ServerDataPool.redisDataManager.removeRoomAuth(roomId, roomRoles);
 		}else{
-			serverDataManager.removeRoomAuth(roomId, roomRoles);
+			ServerDataPool.serverDataManager.removeRoomAuth(roomId, roomRoles);
 		}
 	}
 
@@ -237,9 +231,9 @@ public class DataManager {
 	 */
 	public void setRoomRole(String roomId, HashSet<String> roomRoles, boolean notSpeak) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setRoomRole(roomId, roomRoles, notSpeak);
+			ServerDataPool.redisDataManager.setRoomRole(roomId, roomRoles, notSpeak);
 		}else{
-			serverDataManager.setRoomRole(roomId, roomRoles, notSpeak);
+			ServerDataPool.serverDataManager.setRoomRole(roomId, roomRoles, notSpeak);
 		}
 	}
 
@@ -248,17 +242,17 @@ public class DataManager {
 	 */
 	public Room getRoom(String roomId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoom(roomId);
+			return ServerDataPool.redisDataManager.getRoom(roomId);
 		}else{
-			return serverDataManager.getRoom(roomId);
+			return ServerDataPool.serverDataManager.getRoom(roomId);
 		}
 	}
 
 	public Set<String> getRooms() {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRooms();
+			return ServerDataPool.redisDataManager.getRooms();
 		}else{
-			return serverDataManager.getRooms();
+			return ServerDataPool.serverDataManager.getRooms();
 		}
 	}
 
@@ -269,9 +263,9 @@ public class DataManager {
 			HashSet<String> userRole, boolean notSpeak) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
+			ServerDataPool.redisDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
 		}else{
-			serverDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
+			ServerDataPool.serverDataManager.setRoomUser(roomId, userId, name, icon, agoraId, userRole, notSpeak);
 		}
 	}
 
@@ -282,9 +276,9 @@ public class DataManager {
 			HashSet<String> userRole, boolean notSpeak) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
+			ServerDataPool.redisDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
 		}else{
-			serverDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
+			ServerDataPool.serverDataManager.setRoomUser(roomId, userId, name, icon, userRole, notSpeak);
 		}
 	}
 
@@ -294,9 +288,9 @@ public class DataManager {
 	public Map<String, People> getRoomUesrs(String roomId) {
 
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomUesrs(roomId);
+			return ServerDataPool.redisDataManager.getRoomUesrs(roomId);
 		}else{
-			return serverDataManager.getRoomUesrs(roomId);
+			return ServerDataPool.serverDataManager.getRoomUesrs(roomId);
 		}
 	}
 
@@ -306,9 +300,9 @@ public class DataManager {
 	public Map<String, People> getRoomTeachers(String roomIds) {
 
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomTeachers(roomIds);
+			return ServerDataPool.redisDataManager.getRoomTeachers(roomIds);
 		}else{
-			return serverDataManager.getRoomTeachers(roomIds);
+			return ServerDataPool.serverDataManager.getRoomTeachers(roomIds);
 		}
 	}
 
@@ -317,9 +311,9 @@ public class DataManager {
 	 */
 	public People getRoomUesr(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomUesr(roomId, userId);
+			return ServerDataPool.redisDataManager.getRoomUesr(roomId, userId);
 		}else{
-			return serverDataManager.getRoomUesr(roomId, userId);
+			return ServerDataPool.serverDataManager.getRoomUesr(roomId, userId);
 		}
 	}
 
@@ -340,9 +334,9 @@ public class DataManager {
 	public void setRoomUserDefAuth(String roomId, String userId, String roleCode, String flag, String num) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
+			ServerDataPool.redisDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
 		}else{
-			serverDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
+			ServerDataPool.serverDataManager.setRoomUserDefAuth(roomId, userId, roleCode, flag, num);
 		}
 	}
 
@@ -351,9 +345,9 @@ public class DataManager {
 	 */
 	public HashSet<String> getRoomUesrRole(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomUesrRole(roomId, userId);
+			return ServerDataPool.redisDataManager.getRoomUesrRole(roomId, userId);
 		}else{
-			return serverDataManager.getRoomUesrRole(roomId, userId);
+			return ServerDataPool.serverDataManager.getRoomUesrRole(roomId, userId);
 		}
 	}
 
@@ -363,9 +357,9 @@ public class DataManager {
 	public HashMap<String, Integer> getRoomUesrAuth(String roomId, String userId) {
 
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomUesrAuth(roomId, userId);
+			return ServerDataPool.redisDataManager.getRoomUesrAuth(roomId, userId);
 		}else{
-			return serverDataManager.getRoomUesrAuth(roomId, userId);
+			return ServerDataPool.serverDataManager.getRoomUesrAuth(roomId, userId);
 		}
 	}
 
@@ -374,9 +368,9 @@ public class DataManager {
 	 */
 	public String getUserRoomNo(String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getUserRoomNo(userId);
+			return ServerDataPool.redisDataManager.getUserRoomNo(userId);
 		}else{
-			return serverDataManager.getUserRoomNo(userId);
+			return ServerDataPool.serverDataManager.getUserRoomNo(userId);
 		}	
 	}
 
@@ -384,9 +378,9 @@ public class DataManager {
 	public Map<String, Integer> getRoomInfo() {
 
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomInfo();
+			return ServerDataPool.redisDataManager.getRoomInfo();
 		}else{
-			return serverDataManager.getRoomInfo();
+			return ServerDataPool.serverDataManager.getRoomInfo();
 		}
 	}
 
@@ -397,9 +391,9 @@ public class DataManager {
 	public List<Logs> getRoomChats(String roomId, String chatKey, int chatNum) {
 
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomChats(roomId, chatKey, chatNum);
+			return ServerDataPool.redisDataManager.getRoomChats(roomId, chatKey, chatNum);
 		}else{
-			return serverDataManager.getRoomChats(roomId, chatKey, chatNum);
+			return ServerDataPool.serverDataManager.getRoomChats(roomId, chatKey, chatNum);
 		}	
 	}
 
@@ -407,9 +401,9 @@ public class DataManager {
 	public synchronized void setRoomChats(String roomId, String chatKey, String userId, String msg) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setRoomChats(roomId, chatKey, userId, msg);
+			ServerDataPool.redisDataManager.setRoomChats(roomId, chatKey, userId, msg);
 		}else{
-			serverDataManager.setRoomChats(roomId, chatKey, userId, msg);
+			ServerDataPool.serverDataManager.setRoomChats(roomId, chatKey, userId, msg);
 		}	
 	}
 
@@ -417,9 +411,9 @@ public class DataManager {
 	public void cleanLogs(String roomId) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.cleanLogs(roomId);
+			ServerDataPool.redisDataManager.cleanLogs(roomId);
 		}else{
-			serverDataManager.cleanLogs(roomId);
+			ServerDataPool.serverDataManager.cleanLogs(roomId);
 		}
 	}
 
@@ -428,9 +422,9 @@ public class DataManager {
 	 */
 	public int getRoomTheSameUserCannotAccessNum(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
+			return ServerDataPool.redisDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
 		}else{
-			return serverDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
+			return ServerDataPool.serverDataManager.getRoomTheSameUserCannotAccessNum(roomId,userId);
 		}	
 	}
 
@@ -440,18 +434,18 @@ public class DataManager {
 	public void setFreeRoom(String roomId, int freeNum) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.setFreeRoom(roomId,freeNum);
+			ServerDataPool.redisDataManager.setFreeRoom(roomId,freeNum);
 		}else{
-			serverDataManager.setFreeRoom(roomId,freeNum);
+			ServerDataPool.serverDataManager.setFreeRoom(roomId,freeNum);
 		}	
 	}
 
 	public void cancelFreeRoom(String roomId) {
 
 		if(ConfManager.getIsRedis()){
-			redisDataManager.cancelFreeRoom(roomId);
+			ServerDataPool.redisDataManager.cancelFreeRoom(roomId);
 		}else{
-			serverDataManager.cancelFreeRoom(roomId);
+			ServerDataPool.serverDataManager.cancelFreeRoom(roomId);
 		}	
 	}
 
@@ -459,18 +453,18 @@ public class DataManager {
 	/** 刪除用戶id-ip信息 */
 	public void delUserServer(String userId) {
 		if(ConfManager.getIsRedis()){
-			redisDataManager.delUserServer(userId);
+			ServerDataPool.redisDataManager.delUserServer(userId);
 		}else{
-			//serverDataManager.delUserServer(userId);
+			//ServerDataPool.serverDataManager.delUserServer(userId);
 		}
 	}
 
 	/** 获取用户所在服务器通道 */
 	public ChannelHandlerContext getUserServerChannel(String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getUserServerChannel(userId);
+			return ServerDataPool.redisDataManager.getUserServerChannel(userId);
 		}else{
-			//serverDataManager.getUserServerChannel(userId);
+			//ServerDataPool.serverDataManager.getUserServerChannel(userId);
 		}
 		return null;
 	}
@@ -478,9 +472,9 @@ public class DataManager {
 	/** 获取用户所在服务器ip */
 	public String getUserServerIp(String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getUserServerIp(userId);
+			return ServerDataPool.redisDataManager.getUserServerIp(userId);
 		}else{
-			//serverDataManager.getUserServerIp(userId);
+			//ServerDataPool.serverDataManager.getUserServerIp(userId);
 		}
 		return null;
 	}
@@ -488,9 +482,9 @@ public class DataManager {
 	/** 根據用戶id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public List<ChannelHandlerContext> getChannelListOfUserRoomByUserId(String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getChannelListOfUserRoomByUserId(userId);
+			return ServerDataPool.redisDataManager.getChannelListOfUserRoomByUserId(userId);
 		}else{
-			//serverDataManager.getChannelListOfUserRoomByUserId(userId);
+			//ServerDataPool.serverDataManager.getChannelListOfUserRoomByUserId(userId);
 		}
 		return null;
 	}
@@ -498,9 +492,9 @@ public class DataManager {
 	/** 根據用戶id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public Set<String> getServerListOfUserRoomByUserId(String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getServerListOfUserRoomByUserId(userId);
+			return ServerDataPool.redisDataManager.getServerListOfUserRoomByUserId(userId);
 		}else{
-			//serverDataManager.getServerListOfUserRoomByUserId(userId);
+			//ServerDataPool.serverDataManager.getServerListOfUserRoomByUserId(userId);
 		}
 		return null;
 	}
@@ -508,22 +502,22 @@ public class DataManager {
 	/** 根據房間id--获取用户所在房间其他用户所在服务ip列表--若不包含发信者ip则除外 */
 	public Set<String> getServerListOfUserRoomByRoomId(String roomId, String userId) {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getServerListOfUserRoomByRoomId(roomId, userId);
+			return ServerDataPool.redisDataManager.getServerListOfUserRoomByRoomId(roomId, userId);
 		}else{
-			//serverDataManager.getServerListOfUserRoomByRoomId(roomId, userId);
+			//ServerDataPool.serverDataManager.getServerListOfUserRoomByRoomId(roomId, userId);
 		}
 		return null;
 	}
 
 	public String getCenterMasterAddress() {
 		if(ConfManager.getIsRedis()){
-			return redisDataManager.getCenterMasterAddress();
+			return ServerDataPool.redisDataManager.getCenterMasterAddress();
 		}else{
 		}
 		return null;
 	}
 	
 	public boolean checkSourceAndTargetServer(String fromUserId, String toUserId) {
-		return redisDataManager.checkSourceAndTargetServer(fromUserId,toUserId);
+		return ServerDataPool.redisDataManager.checkSourceAndTargetServer(fromUserId,toUserId);
 	}
 }

@@ -24,7 +24,6 @@ public enum RedisManager {
 	INSTANCE;
 	private static ExecutorService timelyLogExecutor = Executors.newSingleThreadExecutor();
 	
-	private static RedisDataManager redisDataManager = new RedisDataManager();;
 	/**
 	 * 上一个达到立即保存日志线程的是否完毕 true为完毕
 	 */
@@ -69,7 +68,7 @@ public enum RedisManager {
 			return;
 
 		// 获取房间内所有用户信息
-		Map<String, People> roomUsers = redisDataManager.getRoomUesrs(pact.getRoomId());
+		Map<String, People> roomUsers = ServerDataPool.redisDataManager.getRoomUesrs(pact.getRoomId());
 		// 如果房间内没有用户 则返回
 		if (null == roomUsers || 0 == roomUsers.size())
 			return;
@@ -115,7 +114,7 @@ public enum RedisManager {
 		if(roomIds!=null&&roomIds.length>0){
 			//循环保存房间用户信息
 			for (String rId : roomIds) {
-				redisDataManager.setRoomUser(rId, userId, name, icon, agoraId, userRole, notSpeak);
+				ServerDataPool.redisDataManager.setRoomUser(rId, userId, name, icon, agoraId, userRole, notSpeak);
 			}
 		}
 	}
@@ -140,7 +139,7 @@ public enum RedisManager {
 			// 如果不是中心用户id
 			if (!ConfManager.getCenterId().equals(userId)) {
 				// 删除房间内该用户信息
-				redisDataManager.removeRoomUser(userId);
+				ServerDataPool.redisDataManager.removeRoomUser(userId);
 				return;
 			}
 			// 获取用户通道信息
@@ -193,7 +192,7 @@ public enum RedisManager {
 			return;
 
 		// 获取房间内所有用户信息
-		Map<String, People> roomUsers = redisDataManager.getRoomUesrs(pact.getRoomId());
+		Map<String, People> roomUsers = ServerDataPool.redisDataManager.getRoomUesrs(pact.getRoomId());
 		// 如果房间内没有用户 则返回
 		if (null == roomUsers || 0 == roomUsers.size())
 			return;
