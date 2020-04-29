@@ -8,7 +8,6 @@ import java.util.Objects;
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
-import com.sa.base.ServerManager;
 import com.sa.base.element.People;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
@@ -25,8 +24,6 @@ public class ServerLoginOut extends Packet{
 
 	@Override
 	public void execPacket() {
-		ServerManager.INSTANCE.log(this);
-
 		People people = null;
 		String[] roomIds =null;
 		if(null!=this.getRoomId()){

@@ -194,6 +194,7 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					serverLoginOut.setToUserId(ce.getUserId());
 					serverLoginOut.setTransactionId(1111199999);
 			
+					ServerManager.INSTANCE.log(serverLoginOut);
 					serverLoginOut.execPacket();
 			}
 		} catch (Exception e) {
