@@ -62,6 +62,8 @@ public class ServerRequestbRoomUser extends Packet {
 						/** json格式的用户信息放入 选项 1 中 */
 						crru.setOption(1, json);
 						crru.setRoomId(rId);
+						/** 设置目标用户的id*/
+						crru.setToUserId(this.getFromUserId());
 						/** 执行 */
 						crru.execPacket();
 					}

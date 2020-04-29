@@ -27,7 +27,7 @@ import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
-import com.sa.service.client.ClientResponecGag;
+import com.sa.service.client.ClientResponecNotGag;
 import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
 
@@ -65,7 +65,7 @@ public class ServerRequestcNotGag extends Packet {
 				/** 转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 				//本服务器处理
-				ClientResponecGag cr = new ClientResponecGag(this.getPacketHead());
+				ClientResponecNotGag cr = new ClientResponecNotGag(this.getPacketHead());
 				cr.execPacket();
 			}
 		}

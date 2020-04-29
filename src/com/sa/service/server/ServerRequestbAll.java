@@ -45,7 +45,7 @@ public class ServerRequestbAll extends Packet {
 			/** 如果有中心 并且 中心不是目标地址*/
 			if (ConfManager.getIsCenter()) {
 				try {
-					/** 转发到中心--中心发下行给本机外其他服务*/
+					/** 转发到中心--中心发下行给本机外其他所有服务*/
 					Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 					/** 发送下行消息给本机*/
 					ClientResponebAll clientResponebAll = new ClientResponebAll(this.getPacketHead(), this.getOptions());

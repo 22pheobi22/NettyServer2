@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.sa.base.ConfManager;
 import com.sa.base.Manager;
+import com.sa.base.ServerDataPool;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
@@ -50,6 +51,13 @@ public class ServerRequestcAgreeApplyAuth extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 消息转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				boolean b = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(),this.getToUserId());
+				if(!b){
+					/** 实例化 开课 下行 并 赋值 并 执行 */
+					ClientResponecAgreeApplyAuth clientResponecAgreeApplyAuth = new ClientResponecAgreeApplyAuth(
+							this.getPacketHead(), this.getOptions());
+					clientResponecAgreeApplyAuth.execPacket();
+				}
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {

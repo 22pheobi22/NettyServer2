@@ -43,11 +43,6 @@ public class ServerRequestbOne extends Packet {
 		/** 校验用户权限 */
 		Map<String, Object> result = Permission.INSTANCE.checkUserAuth(this.getRoomId(), this.getFromUserId(),
 				Constant.AUTH_SPEAK);
-		/** 校验目标用户是否存在 */
-		/** 校验用户权限 */
-		//Map<String, Object> existResult = Permission.INSTANCE.checkUserExist(this.getRoomId(), this.getToUserId());
-		/** 如果校验成功 */
-		//if (0 == ((Integer) result.get("code")) && 0 == ((Integer) existResult.get("code"))) {
 		if (0 == ((Integer) result.get("code"))&&null!=this.getToUserId()) {
 			if (ConfManager.getIsCenter()) {
 				// 判断目标用户是否在当前服务

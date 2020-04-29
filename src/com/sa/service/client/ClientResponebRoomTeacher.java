@@ -37,11 +37,8 @@ public class ClientResponebRoomTeacher extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/** 设置目标用户的id */
-			this.setToUserId(this.getFromUserId());
 			/** 发消息给目标用户 */
 			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
