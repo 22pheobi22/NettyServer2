@@ -45,15 +45,16 @@ public class ServerRequestbOne extends Packet {
 				Constant.AUTH_SPEAK);
 		if (0 == ((Integer) result.get("code"))&&null!=this.getToUserId()) {
 			if (ConfManager.getIsCenter()) {
-				// 判断目标用户是否在当前服务
-				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getToUserId());
-				if (null != ctx) {
+				
+				//如果发送者和接收者在同一服务 则在本服务器处理
+				boolean sameServer = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(), this.getToUserId());
+				if(sameServer&&null != this.getToUserId() && !"".equals(this.getToUserId())){
 					/** 实例化一对一消息类型 下行 并 赋值 */
 					ClientResponebOne clientResponebOne = new ClientResponebOne(this.getPacketHead(),
 							this.getOptions());
 					/** 执行 一对一消息发送 下行 */
 					clientResponebOne.execPacket();
-				} else {
+				}else{
 					/** 发送 到中心 */
 					Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 				}
