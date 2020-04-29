@@ -27,6 +27,7 @@ import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
+import com.sa.service.client.ClientResponecGag;
 import com.sa.service.client.ClientResponecNotGag;
 import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
@@ -64,13 +65,8 @@ public class ServerRequestcNotGag extends Packet {
 			}else{
 				/** 转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-				//如果是单人禁言 且 禁言与被禁言人在同一服务 则在本服务器处理
-				boolean sameServer = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(), this.getToUserId());
-				if(sameServer&&null != this.getToUserId() && !"".equals(this.getToUserId())){
-					//本服务器处理
-					ClientResponecNotGag cr = new ClientResponecNotGag(this.getPacketHead());
-					cr.execPacket();
-				}
+				ClientResponecGag cr = new ClientResponecGag(this.getPacketHead());
+				cr.execPacket();
 			}
 		}
 	}
