@@ -39,8 +39,6 @@ public class ClientResponecRemove extends Packet {
 			for (String rId : roomIds) {
 				/** 发送被迫下线通知*/
 				offline(rId);
-				/** 通知被踢用户*/
-				noticeUser(rId);
 			}
 		}
 		/**该用户是否还存在于其他房间*/
@@ -74,12 +72,5 @@ public class ClientResponecRemove extends Packet {
 		clientMsgReceipt.setToUserId(this.getToUserId());
 		clientMsgReceipt.setRoomId(rId);
 		clientMsgReceipt.execPacket();
-	}
-
-	private void noticeUser(String rId) {
-		ClientResponebRoomUser crru = new ClientResponebRoomUser(this.getPacketHead());
-		crru.setOption(12, this.getToUserId());
-		crru.setRoomId(rId);
-		crru.execPacket();
 	}
 }
