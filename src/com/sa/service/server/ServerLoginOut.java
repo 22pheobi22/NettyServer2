@@ -27,7 +27,7 @@ public class ServerLoginOut extends Packet{
 		People people = null;
 		String[] roomIds =null;
 		if(null!=this.getRoomId()){
-			roomIds = this.getRoomId().split(","); 
+			roomIds = this.getRoomId().split(",");
 		}
 		if (null != roomIds && roomIds.length > 0) {
 			for (String rId : roomIds) {
