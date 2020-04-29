@@ -65,7 +65,7 @@ public class ServerRequestcNotGag extends Packet {
 			}else{
 				/** 转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
-				ClientResponecGag cr = new ClientResponecGag(this.getPacketHead());
+				ClientResponecNotGag cr = new ClientResponecNotGag(this.getPacketHead());
 				cr.execPacket();
 			}
 		}
