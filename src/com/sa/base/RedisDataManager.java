@@ -1103,7 +1103,7 @@ public class RedisDataManager {
 		boolean b =false;
 		if(!StringUtil.isEmpty(fromUserId)&&!StringUtil.isEmpty(toUserId)){
 			String fromServerIp = getUserServerIp(fromUserId);
-			String toServerIp = getUserServerIp(fromUserId);
+			String toServerIp = getUserServerIp(toUserId);
 			if(fromServerIp.equals(toServerIp)){
 				b=true;
 			}
