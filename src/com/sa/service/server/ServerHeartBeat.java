@@ -24,6 +24,8 @@ public class ServerHeartBeat extends Packet{
 		clientHeartBeat.setFromUserId(this.getToUserId());
 		clientHeartBeat.setToUserId(this.getFromUserId());
 		
+		System.out.println(this.getFromUserId());
+		
 		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 		ctx.writeAndFlush(clientHeartBeat);
 	}

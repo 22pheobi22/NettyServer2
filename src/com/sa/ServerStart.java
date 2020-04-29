@@ -12,7 +12,7 @@ public class ServerStart {
 
 	public static void main(String[] args) {
 		initConf();
-		
+
 		new Thread(new AutoCancelTempConnect()).start();
 
 		/** 是否 启用 mongodb*/

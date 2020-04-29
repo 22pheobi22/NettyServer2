@@ -136,6 +136,7 @@ public enum LoginManager {
 	private void clientLogin(ServerLogin loginPact, int code, String msg, String role, ChannelHandlerContext context) {
 		ClientLogin cl = new ClientLogin(loginPact.getPacketHead());
 
+		cl.setFromUserId(loginPact.getToUserId());
 		cl.setToUserId(loginPact.getFromUserId());
 		cl.setStatus(code);
 		cl.setOption(1, loginPact.getOption(1));
