@@ -20,16 +20,12 @@ public class ServerHeartBeat extends Packet{
 	@Override
 	public void execPacket() {
 		ClientHeartBeat clientHeartBeat = new ClientHeartBeat();
+		clientHeartBeat.setRoomId("0");
 		clientHeartBeat.setFromUserId(this.getToUserId());
 		clientHeartBeat.setToUserId(this.getFromUserId());
-
+		
 		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 		ctx.writeAndFlush(clientHeartBeat);
-	}
-
-	@Override
-	public String toString() {
-		return null;
 	}
 
 }

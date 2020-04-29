@@ -21,16 +21,6 @@ public class ServerStart {
 			new Thread(new MongoLogSync(ConfManager.getMongoIp(), ConfManager.getMongoPort(), ConfManager.getMongoNettyLogDBName(),ConfManager.getMongoNettyLogTableName(),ConfManager.getMongoNettyLogUserName(),ConfManager.getMongoNettyLogPassword(), ConfManager.getLogTime(),false)).start();
 		}
 
-		//new Thread(new RoomCancelSync()).start();
-
-/*		new Thread(new HttpServer(ConfManager.getHttpPort())).start();
-		new Thread(new LogSync(ConfManager.getLogUrl(), ConfManager.getLogTime())).start();
-		if (!ConfManager.getIsCenter()) {
-			new Thread(new StatisticRoomInfoSync(ConfManager.getStatisticUrl(), ConfManager.getStatisticTime())).start();
-		} else {
-			new Thread(new ClientSocketServcer(ConfManager.getCenterPort())).start();
-		}*/
-
 		startNetty();
 	}
 
