@@ -329,7 +329,7 @@ public enum ServerManager {
 		packet.printPacket(consoleFlag, Constant.CONSOLE_CODE_R, fileFlag, fileLogPath);
 
 		// 缓存消息日志
-		if (packet.getPacketType() != PacketType.ServerHearBeat && packet.getPacketType() != PacketType.ServerLogin){
+		if (packet.getPacketType() != PacketType.ServerHearBeat){
 			ServerDataPool.log.put(System.currentTimeMillis()+ConfManager.getLogKeySplit()+packet.getTransactionId(), packet);
 			int logTotalSize = ServerDataPool.log.size();
 			if(ConfManager.getMongodbEnable()&&logTotalSize > ConfManager.getTimelyDealLogMaxThreshold() && lastTimelyLogThreadExecuteStatus.get()){
