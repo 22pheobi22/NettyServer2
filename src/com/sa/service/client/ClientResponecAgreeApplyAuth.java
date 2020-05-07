@@ -52,9 +52,17 @@ public class ClientResponecAgreeApplyAuth extends Packet {
 				ServerDataPool.dataManager.setRoomUserDefAuth(this.getRoomId(), this.getToUserId(),
 						(String) this.getOption(1), (String) this.getOption(3), (String) this.getOption(4));
 			}
-
-			/** 发送消息给目标用户 */
-			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
+			String[] roomIds = this.getRoomId().split(",");
+			if (null != roomIds && roomIds.length > 0) {
+				for (String rId : roomIds) {
+					ClientResponecAgreeApplyAuth cr = new ClientResponecAgreeApplyAuth(
+							this.getPacketHead(), this.getOptions());
+					cr.setRoomId(rId);
+					/** 发送消息给目标用户 */
+					Manager.INSTANCE.sendPacketTo(cr, Constant.CONSOLE_CODE_S);
+				}
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -27,7 +27,7 @@ public class ServerLoginOut extends Packet{
 		People people = null;
 		String[] roomIds =null;
 		if(null!=this.getRoomId()){
-			roomIds = this.getRoomId().split(","); 
+			roomIds = this.getRoomId().split(",");
 		}
 		if (null != roomIds && roomIds.length > 0) {
 			for (String rId : roomIds) {
@@ -45,8 +45,7 @@ public class ServerLoginOut extends Packet{
 			this.setOption(255, "deleted");
 		
 		/**是否是中心*/
-		if(!ConfManager.getCenterId().equals(this.getFromUserId())){
-			//this.setToUserId("0");
+		if(!ConfManager.getCenterId().contains(this.getFromUserId())){
 			//轉發到中心只做業務處理 不再往服務器下發消息
 			Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
 		}

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sa.base.ServerDataPool;
+import com.sa.base.element.People;
 import com.sa.util.Constant;
 
 public enum Permission {
@@ -54,6 +55,29 @@ public enum Permission {
 			}
 		}
 
+		return setResult(code, msg);
+	}
+	
+	/**
+	 * 判断目标用户是否存在于指定房间
+	 * */
+	public Map<String, Object> checkUserExist(String roomId, String userId) {
+		Integer code = 10082;
+		String msg = Constant.ERR_CODE_10082;
+
+		String[] roomIds = roomId.split(",");
+		if(null!=userId&&null!=roomIds&&roomIds.length>0){
+			//多个房间仅一个存在即存在
+			for (String rId : roomIds) {
+				/** 根据房间id 和 目标用户id 获取 人员信息 */
+				People people = ServerDataPool.dataManager.getRoomUesr(rId, userId);
+				if (null != people) {
+					code = 0;
+					msg = "success";
+					break;
+				}
+			}
+		}
 		return setResult(code, msg);
 	}
 	

@@ -1,6 +1,8 @@
 package com.sa.base;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sa.util.StringUtil;
@@ -28,6 +30,13 @@ public class ConfManager {
 
 		return strIp;
 	}
+	/** 另一个中心的ip */
+	public static List<String> getCenterId() {
+		String centerIds = CONF_MAP.get("center.id");
+		centerIds = null == centerIds || "".equals(centerIds) ? "127.0.0.1" : centerIds;
+
+		return Arrays.asList(centerIds.split(";"));
+	}
 
 	// 获取另一个中心的端口
 	/** 另一个中心的端口 */
@@ -43,6 +52,15 @@ public class ConfManager {
 		String strPort = CONF_MAP.get("clientsoket.server.port");
 
 		strPort = null == strPort || "".equals(strPort) ? "8080" : strPort;
+
+		return Integer.parseInt(strPort);
+	}
+	
+	/** 给中心提供服务的端口 */
+	public static int getCenterSoketServerPort() {
+		String strPort = CONF_MAP.get("centersoket.server.port");
+
+		strPort = null == strPort || "".equals(strPort) ? "8280" : strPort;
 
 		return Integer.parseInt(strPort);
 	}
@@ -98,28 +116,6 @@ public class ConfManager {
 		}
 
 		return Boolean.parseBoolean(strIsCenter);
-	}
-
-	/** 中心IP */
-	public static String getCenterIp() {
-		String strCenterIp = CONF_MAP.get("center.ip");
-
-		if (StringUtil.isEmpty(strCenterIp)) {
-			strCenterIp = "192.168.1.105";
-		}
-
-		return strCenterIp;
-	}
-
-	/** 中心ID */
-	public static String getCenterId() {
-		String strCenterId = CONF_MAP.get("center.id");
-
-		if (StringUtil.isEmpty(strCenterId) || !StringUtil.isInteger(strCenterId)) {
-			strCenterId = "0";
-		}
-
-		return strCenterId;
 	}
 
 	/** 间隔同步入库地址 */

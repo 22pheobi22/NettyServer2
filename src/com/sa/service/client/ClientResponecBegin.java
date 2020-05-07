@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.sa.base.ConfManager;
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.element.People;
@@ -49,34 +48,29 @@ public class ClientResponecBegin extends Packet {
 
 	@Override
 	public void execPacket() {
-
 		try {
-			if (!ConfManager.getIsCenter()) {
-				/** 获取房间禁言角色 */
-				HashSet<String> roomRoles = getRole(this.getOption(1));
-				/** 设置房间角色 */
-				ServerDataPool.dataManager.setRoomRole(this.getRoomId(), roomRoles, ConfManager.getTalkEnable());
-				/** 获取房间内用户 */
-				Map<String, People> hm = ServerDataPool.dataManager.getRoomUesrs(this.getRoomId());
-
-				/** 遍历用户信息 */
-				for (Entry<String, People> entry : hm.entrySet()) {
-					ClientResponecBegin clientResponecBegin = new ClientResponecBegin(this.getPacketHead());
-					/** 设置目标用户id */
-					clientResponecBegin.setToUserId(entry.getKey());
-					/** 如果该用户有说话的权利 */
-					if (0 == entry.getValue().getAuth().get(Constant.AUTH_SPEAK)) {
-						/** 设置 消息 为 禁言 */
-						clientResponecBegin.setOption(1, Constant.ERR_CODE_10095);
-					} else {
-						/** 设置 消息 为 解除禁言 */
-						clientResponecBegin.setOption(1, Constant.ERR_CODE_10096);
+			String[] roomIds = this.getRoomId().split(",");
+			if (null != roomIds && roomIds.length > 0) {
+				for (String rId : roomIds) {
+					/** 获取房间内用户*/
+					Map<String, People> hm = ServerDataPool.dataManager.getRoomUesrs(rId);
+					/** 遍历用户信息 */
+					for (Entry<String, People> entry : hm.entrySet()) {
+						ClientResponecBegin clientResponecBegin = new ClientResponecBegin(this.getPacketHead());
+						/** 设置目标用户id*/
+						clientResponecBegin.setToUserId(entry.getKey());
+						/** 如果该用户有说话的权利*/
+						if (0 == entry.getValue().getAuth().get(Constant.AUTH_SPEAK)) {
+							/** 设置 消息 为 禁言*/
+							clientResponecBegin.setOption(1, Constant.ERR_CODE_10095);
+						} else {
+							/** 设置 消息 为 解除禁言*/
+							clientResponecBegin.setOption(1, Constant.ERR_CODE_10096);
+						}
+						/** 发送消息*/
+						Manager.INSTANCE.sendPacketTo(clientResponecBegin, Constant.CONSOLE_CODE_S);
 					}
-					/** 发送消息 */
-					Manager.INSTANCE.sendPacketTo(clientResponecBegin, Constant.CONSOLE_CODE_S);
 				}
-			} else {
-				Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

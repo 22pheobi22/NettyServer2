@@ -1,16 +1,15 @@
 package com.sa.service.server;
 
+import com.sa.base.ServerDataPool;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
+import com.sa.service.client.ClientHeartBeat;
+
+import io.netty.channel.ChannelHandlerContext;
 
 public class ServerHeartBeat extends Packet{
 
 	public ServerHeartBeat() {
-		this.setTransactionId(0);
-		this.setRoomId("0");
-		this.setFromUserId("0");
-		this.setToUserId("0");;
-		this.setStatus(0);
 	}
 
 	@Override
@@ -20,12 +19,13 @@ public class ServerHeartBeat extends Packet{
 
 	@Override
 	public void execPacket() {
-		System.err.println("收到客户端心跳事件！");
-	}
+		ClientHeartBeat clientHeartBeat = new ClientHeartBeat();
+		clientHeartBeat.setRoomId("0");
+		clientHeartBeat.setFromUserId(this.getToUserId());
+		clientHeartBeat.setToUserId(this.getFromUserId());
 
-	@Override
-	public String toString() {
-		return null;
+		ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
+		ctx.writeAndFlush(clientHeartBeat);
 	}
 
 }

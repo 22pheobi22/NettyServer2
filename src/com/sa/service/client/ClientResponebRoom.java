@@ -43,8 +43,16 @@ public class ClientResponebRoom extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/** 发送给本服务器房间内所有人*/
-			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S,this.getFromUserId());
+			String[] roomIds = this.getRoomId().split(",");
+
+			if (null != roomIds && roomIds.length > 0) {
+				for (String rId : roomIds) {
+					ClientResponebRoom newCrr = new ClientResponebRoom(this.getPacketHead(), this.getOptions());
+					newCrr.setRoomId(rId);
+					/** 发送给本服务器房间内所有人*/
+					Manager.INSTANCE.sendPacketToRoomAllUsers(newCrr, Constant.CONSOLE_CODE_S,newCrr.getFromUserId());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

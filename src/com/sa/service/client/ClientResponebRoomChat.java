@@ -24,7 +24,6 @@ public class ClientResponebRoomChat extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			this.setToUserId(getFromUserId());
 			Manager.INSTANCE.sendPacketTo(this, Constant.CONSOLE_CODE_S);
 		} catch (Exception e) {
 			e.printStackTrace();

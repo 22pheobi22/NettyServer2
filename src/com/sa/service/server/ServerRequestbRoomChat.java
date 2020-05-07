@@ -41,6 +41,7 @@ public class ServerRequestbRoomChat extends Packet {
 					/** json格式的用户信息放入 选项 1 中*/
 					crrc.setOption(1, json);
 					crrc.setRoomId(rId);
+					crrc.setToUserId(this.getFromUserId());
 					/** 执行*/
 					crrc.execPacket();
 				}

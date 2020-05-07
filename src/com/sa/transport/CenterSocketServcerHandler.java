@@ -25,7 +25,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 
-public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
+public class CenterSocketServcerHandler extends ChannelInboundHandlerAdapter {
 
 	// 客户端超时次数
 	private Map<ChannelHandlerContext, Integer> clientOvertimeMap = new ConcurrentHashMap<>();
@@ -40,15 +40,14 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 		try {
 			//System.out.println("channelRead:"+context.channel().remoteAddress());
-			//String strIp = StringUtil.subStringIp(context.channel().remoteAddress().toString());
+//			String strIp = StringUtil.subStringIp(context.channel().remoteAddress().toString());
 			Packet packet = (Packet) msg;
-			//packet.setRemoteIp(strIp);
+//			packet.setRemoteIp(strIp);
 			if (packet.getPacketType() == PacketType.ServerLogin) {
 				ServerManager.INSTANCE.log(packet);
 				LoginManager.INSTANCE.login(context, (ServerLogin) packet);
 			} else if (packet.getPacketType() == PacketType.SysLoginReq) {
 				SystemLoginManager.INSTANCE.login(context, (SysLoginReq) packet);
-			} else if (packet.getPacketType() == PacketType.ServerHearBeat) {
 			} else {
 				// 记录数据库日志
 				ServerManager.INSTANCE.log(packet);
@@ -194,7 +193,6 @@ public class ClientSocketServcerHandler extends ChannelInboundHandlerAdapter {
 					serverLoginOut.setToUserId(ce.getUserId());
 					serverLoginOut.setTransactionId(1111199999);
 			
-					ServerManager.INSTANCE.log(serverLoginOut);
 					serverLoginOut.execPacket();
 			}
 		} catch (Exception e) {

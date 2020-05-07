@@ -29,15 +29,19 @@ public class ServerRequestcShareRemove extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				//本服務器處理
+				ClientResponecShareRemove clientResponecShareRemove = new ClientResponecShareRemove(this.getPacketHead(), this.getOptions());
+				clientResponecShareRemove.execPacket();
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
-						this.setRoomId(rId);
 						/** 实例化共享删除 下行 并赋值 并 执行 */
-						new ClientResponecShareRemove(this.getPacketHead(), this.getOptions()).execPacket();
+						ClientResponecShareRemove clientResponecShareRemove = new ClientResponecShareRemove(this.getPacketHead(), this.getOptions());
+						clientResponecShareRemove.setRoomId(rId);
+						clientResponecShareRemove.execPacket();
 						/** 删除共享 */
-						ServerDataPool.dataManager.removeShare(this.getRoomId(), op1);
+						ServerDataPool.dataManager.removeShare(rId, op1);
 					}
 				}
 			}

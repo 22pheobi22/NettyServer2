@@ -24,7 +24,6 @@ public enum ServerManager {
 	INSTANCE;
 	private static ExecutorService timelyLogExecutor = Executors.newSingleThreadExecutor();
 	 
-	private static ServerDataManager serverDataManager= new ServerDataManager();
 	/**
 	 * 上一个达到立即保存日志线程的是否完毕 true为完毕 
 	 */
@@ -84,10 +83,14 @@ public enum ServerManager {
 		Map<String, ChannelHandlerContext> contextMap  = ServerDataPool.USER_CHANNEL_MAP;
 		// 如果空则返回
 		if(StringUtil.isEmpty(contextMap)) return;
+		String masterAddr = ServerDataPool.redisDataManager.getCenterMasterAddress();
 		// 获取服务端和中心的管道
-		ChannelHandlerContext targetContext = contextMap.get("0");
+		ChannelHandlerContext targetContext = contextMap.get(masterAddr);
 		// 如果空则返回
-		if(targetContext == null) return;
+		if(targetContext == null){
+			System.err.println("服务与中心无连接");
+			return;
+		} 
 		// 在控制台打印消息
 		pact.printPacket(ConfManager.getConsoleFlag(), consoleHead, ConfManager.getFileLogFlag(), ConfManager.getFileLogPath());
 		// 记录操作日志
@@ -97,7 +100,7 @@ public enum ServerManager {
 	}
 
 	/**
-	 *  向所有在线用户发送数据包
+	 *  向所有在线用户发送数据包 包括發送者
 	 * @throws Exception
 	 */
 	public void sendPacketToRoomAllUsers(Packet pact, String consoleHead) throws Exception{
@@ -105,7 +108,7 @@ public enum ServerManager {
 		if(pact == null ) return;
 
 		// 获取房间内所有用户信息
-		Map<String, People> roomUsers = serverDataManager.getRoomUesrs(pact.getRoomId());
+		Map<String, People> roomUsers = ServerDataPool.serverDataManager.getRoomUesrs(pact.getRoomId());
 		// 如果房间内没有用户 则返回
 		if (null == roomUsers || 0 == roomUsers.size()) return;
 
@@ -116,11 +119,9 @@ public enum ServerManager {
 
 		// 遍历用户map
 		for (Map.Entry<String, People> entry : roomUsers.entrySet()) {
-			// 如果当前遍历出来的用户是发消息的用户，则不发送并继续遍历
-			/*if (entry.getKey().equals(pact.getFromUserId())) {
+			if ("0".equals(entry.getKey())) {
 				continue;
-			}*/
-
+			}
 			// 获取用户通道
 			ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(entry.getKey());
 			if(null!=ctx){
@@ -146,10 +147,9 @@ public enum ServerManager {
 		// 遍历用户-通道map
 		for (Entry<String, ChannelHandlerContext> ctx : ServerDataPool.USER_CHANNEL_MAP.entrySet()) {
 			// 将数据包发送给所有用户  中心除外
-			if (!ConfManager.getCenterId().equals(ctx.getKey())) {
+			if (!ConfManager.getCenterId().contains(ctx.getKey())) {
 				// 发消息
 				writeAndFlush(ctx.getValue(), pact);
-//				ctx.getValue().writeAndFlush(pact);
 			}
 		}
 	}
@@ -171,13 +171,13 @@ public enum ServerManager {
 //		System.out.println(ServerDataPool.USER_CHANNEL_MAP.size() + "U C" + ServerDataPool.CHANNEL_USER_MAP.size());
 
 		// 如果用户不是中心
-		if (!ConfManager.getCenterId().equals(userId)) {
+		if (!ConfManager.getCenterId().contains(userId)) {
 			// 将用户信息缓存
 			String[] roomIds = roomId.split(",");
 			if(roomIds!=null&&roomIds.length>0){
 				//循环保存房间用户信息
 				for (String rId : roomIds) {
-					serverDataManager.setRoomUser(rId, userId, name, icon, agoraId, userRole, notSpeak);
+					ServerDataPool.serverDataManager.setRoomUser(rId, userId, name, icon, agoraId, userRole, notSpeak);
 				}
 			}
 		}
@@ -192,8 +192,8 @@ public enum ServerManager {
 			// 抛出通道为空的异常
 			throw new NullPointerException("context is null");
 		}
-		//中心主备替换二次连接时关闭之前通道并移除信息重新保存
-		if(ConfManager.getCenterId().equals(userId)){
+		// 中心主备替换二次连接时关闭之前通道并移除信息重新保存
+		if(ConfManager.getCenterId().contains(userId)) {
 			if(ServerDataPool.USER_CHANNEL_MAP.containsKey(userId)){
 				ChannelHandlerContext ctx = ServerDataPool.USER_CHANNEL_MAP.get(userId);
 				if(null!=ctx&&ServerDataPool.CHANNEL_USER_MAP.containsKey(ctx)){
@@ -235,9 +235,9 @@ public enum ServerManager {
 			ServerDataPool.USER_CHANNEL_MAP.remove(userId);
 
 			// 如果不是中心用户id
-			if (!ConfManager.getCenterId().equals(userId)) {
+			if (!ConfManager.getCenterId().contains(userId)) {
 				// 删除房间内该用户信息
-				serverDataManager.removeRoomUser(userId);
+				ServerDataPool.serverDataManager.removeRoomUser(userId);
 			}
 			if(null!=ctx){
 				// 通道关闭
@@ -275,7 +275,7 @@ public enum ServerManager {
 		// 遍历用户通道Map
 		for (Entry<String, ChannelHandlerContext> ctx : ServerDataPool.USER_CHANNEL_MAP.entrySet()) {
 			// 如果不是发信人且不是中心
-			if (!ConfManager.getCenterId().equals(ctx.getKey()) && !fromUserId.equals(ctx.getKey())) {
+			if (!ConfManager.getCenterId().contains(ctx.getKey()) && !fromUserId.equals(ctx.getKey())) {
 				// 发送消息
 				ctx.getValue().writeAndFlush(pact);
 			}
@@ -291,7 +291,7 @@ public enum ServerManager {
 		if(pact == null ) return;
 
 		// 获取房间内所有用户信息
-		Map<String, People> roomUsers = serverDataManager.getRoomUesrs(pact.getRoomId());
+		Map<String, People> roomUsers = ServerDataPool.serverDataManager.getRoomUesrs(pact.getRoomId());
 		// 如果房间内没有用户 则返回
 		if (null == roomUsers || 0 == roomUsers.size()) return;
 
@@ -329,7 +329,7 @@ public enum ServerManager {
 		packet.printPacket(consoleFlag, Constant.CONSOLE_CODE_R, fileFlag, fileLogPath);
 
 		// 缓存消息日志
-		if (packet.getPacketType() != PacketType.ServerHearBeat && packet.getPacketType() != PacketType.ServerLogin){
+		if (packet.getPacketType() != PacketType.ServerHearBeat){
 			ServerDataPool.log.put(System.currentTimeMillis()+ConfManager.getLogKeySplit()+packet.getTransactionId(), packet);
 			int logTotalSize = ServerDataPool.log.size();
 			if(ConfManager.getMongodbEnable()&&logTotalSize > ConfManager.getTimelyDealLogMaxThreshold() && lastTimelyLogThreadExecuteStatus.get()){

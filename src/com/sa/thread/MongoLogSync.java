@@ -28,6 +28,7 @@ import com.sa.base.ServerDataPool;
 import com.sa.net.Packet;
 import com.sa.util.DateUtil;
 import com.sa.util.mongo.MongoDBConfig;
+import com.sa.util.mongo.MongoDBIndex;
 import com.sa.util.mongo.MongoDBUtil;
 
 public class MongoLogSync extends BaseSync {
@@ -140,12 +141,7 @@ public class MongoLogSync extends BaseSync {
 	 */
 	private void saveLog(){
 		String todayDateStr =  DateUtil.format(new Date(), DateUtil.DATE_FORMAT_03);
-		String[] indexFieldNames = {"fromUserId","keyPutTime","packetType","roomId"};
-		for (String indexFieldName : indexFieldNames) {
-			mongoUtil.addIndex(collectionName+"_"+todayDateStr, indexFieldName, false);
-		}
-		mongoUtil.addTextIndex(collectionName+"_"+todayDateStr, "packet", false);
-		
+		addIndexs();
 		synchronized (MongoLogSync.class){
 			//本次日志的总数量
 			int logTotalSize = ServerDataPool.log.size();
@@ -188,7 +184,26 @@ public class MongoLogSync extends BaseSync {
 			}
 		}
 	}
-
+	private void addIndexs(){
+		String todayDateStr =  DateUtil.format(new Date(), DateUtil.DATE_FORMAT_03);
+		//
+		String[] indexFieldNames = {"fromUserId","keyPutTime","packetType","roomId"};
+		for (String indexFieldName : indexFieldNames) {
+			mongoUtil.addIndex(collectionName+"_"+todayDateStr, indexFieldName, false);
+		}
+		//Combination Index
+		List<MongoDBIndex> mongoDBIndexs = new ArrayList<>();
+		mongoDBIndexs.add(new MongoDBIndex("packetType"));
+		mongoDBIndexs.add(new MongoDBIndex("keyPutTime"));
+		mongoDBIndexs.add(new MongoDBIndex("roomId"));
+		try {
+			mongoUtil.addCombinationIndex(collectionName+"_"+todayDateStr, mongoDBIndexs, false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//Text Index
+		mongoUtil.addTextIndex(collectionName+"_"+todayDateStr, "packet", false);
+	}
 	@Override
 	public String toJson() {
 		return null;

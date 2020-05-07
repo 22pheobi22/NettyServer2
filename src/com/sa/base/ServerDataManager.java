@@ -58,12 +58,12 @@ public class ServerDataManager {
 	/**
 	 * 获取共享
 	 */
-	public Map<String, Share> getShare(String roomId) {
+	/*public Map<String, Share> getShare(String roomId) {
 		// 根据roomid获取房间信息
 		Room room = this.getRoom(roomId);
 
 		return room.getShare();
-	}
+	}*/
 
 	/**
 	 * 获取共享

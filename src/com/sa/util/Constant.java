@@ -50,7 +50,8 @@ public class Constant {
 	// -------------------------------------------------------------
 	public final static String ERR_CODE_10080 = "用户权限不足";
 	public final static String ERR_CODE_10081 = "用户角色不足";
-
+	public final static String ERR_CODE_10082 = "用户不存在";
+	
 	public final static String ERR_CODE_10060 = "您还未购买此课程";
 	
 	public final static String ERR_CODE_10090 = "帐号或密码错误";

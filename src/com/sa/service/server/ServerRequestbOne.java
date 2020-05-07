@@ -27,6 +27,8 @@ import com.sa.service.client.ClientResponebOne;
 import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
 
+import io.netty.channel.ChannelHandlerContext;
+
 public class ServerRequestbOne extends Packet {
 	public ServerRequestbOne() {
 	}
@@ -41,12 +43,21 @@ public class ServerRequestbOne extends Packet {
 		/** 校验用户权限 */
 		Map<String, Object> result = Permission.INSTANCE.checkUserAuth(this.getRoomId(), this.getFromUserId(),
 				Constant.AUTH_SPEAK);
-		/** 如果校验成功 */
-		if (0 == ((Integer) result.get("code"))) {
-
+		if (0 == ((Integer) result.get("code"))&&null!=this.getToUserId()) {
 			if (ConfManager.getIsCenter()) {
-				/** 发送 到中心 */
-				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				
+				//如果发送者和接收者在同一服务 则在本服务器处理
+				boolean sameServer = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(), this.getToUserId());
+				if(sameServer&&null != this.getToUserId() && !"".equals(this.getToUserId())){
+					/** 实例化一对一消息类型 下行 并 赋值 */
+					ClientResponebOne clientResponebOne = new ClientResponebOne(this.getPacketHead(),
+							this.getOptions());
+					/** 执行 一对一消息发送 下行 */
+					clientResponebOne.execPacket();
+				}else{
+					/** 发送 到中心 */
+					Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				}
 			} else {
 				String[] roomIds = this.getRoomId().split(",");
 				if (roomIds != null && roomIds.length > 0) {

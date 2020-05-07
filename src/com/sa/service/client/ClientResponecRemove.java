@@ -14,10 +14,7 @@
  */
 package com.sa.service.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,6 +34,19 @@ public class ClientResponecRemove extends Packet {
 
 	@Override
 	public void execPacket() {
+		String[] roomIds = this.getRoomId().split(",");
+		if (null != roomIds && roomIds.length > 0) {
+			for (String rId : roomIds) {
+				/** 发送被迫下线通知*/
+				offline(rId);
+			}
+		}
+		/**该用户是否还存在于其他房间*/
+		String userRoomNo = ServerDataPool.dataManager.getUserRoomNo(this.getToUserId());
+		if(null==userRoomNo||"".equals(userRoomNo)){
+			//若不存在  关闭该服务上用户通道
+			ServerDataPool.dataManager.removeUserChannel(this.getToUserId());
+		}
 		/*//有中心此方法不執行
 		*//** 发送被迫下线通知*//*
 		offline();
@@ -44,7 +54,7 @@ public class ClientResponecRemove extends Packet {
 		ServerDataPool.dataManager.removeRoomUser(this.getRoomId(), this.getToUserId());
 		*//** 通知被踢用户*//*
 		noticeUser();*/	
-		ServerDataPool.dataManager.removeUserChannel(this.getToUserId());
+		//ServerDataPool.dataManager.removeUserChannel(this.getToUserId());
 	}
 
 	@Override
@@ -52,7 +62,7 @@ public class ClientResponecRemove extends Packet {
 		return PacketType.ClientResponecRemove;
 	}
 
-	private void offline() {
+	private void offline(String rId) {
 		Map<String, Object> result2 = new HashMap<>();
 
 		result2.put("code", 10097);
@@ -60,13 +70,7 @@ public class ClientResponecRemove extends Packet {
 
 		ClientMsgReceipt clientMsgReceipt = new ClientMsgReceipt(this.getPacketHead(), result2);
 		clientMsgReceipt.setToUserId(this.getToUserId());
+		clientMsgReceipt.setRoomId(rId);
 		clientMsgReceipt.execPacket();
-	}
-
-	private void noticeUser() {
-		ClientResponebRoomUser crru = new ClientResponebRoomUser(this.getPacketHead());
-		crru.setOption(12, this.getToUserId());
-
-		crru.execPacket();
 	}
 }

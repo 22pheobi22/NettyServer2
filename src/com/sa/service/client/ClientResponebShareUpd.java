@@ -33,8 +33,15 @@ public class ClientResponebShareUpd extends Packet {
 	@Override
 	public void execPacket() {
 		try {
-			/** 发送消息给房间内所有用户*/
-			Manager.INSTANCE.sendPacketToRoomAllUsers(this, Constant.CONSOLE_CODE_S, this.getFromUserId());
+			String[] roomIds = this.getRoomId().split(",");
+			if(null!=roomIds&&roomIds.length>0){
+				for (String rId : roomIds) {
+					ClientResponebShareUpd clientResponebShareUpd = new ClientResponebShareUpd(this.getPacketHead(),this.getOptions());
+					clientResponebShareUpd.setRoomId(rId);
+					/** 发送消息给房间内所有用户*/
+					Manager.INSTANCE.sendPacketToRoomAllUsers(clientResponebShareUpd, Constant.CONSOLE_CODE_S, clientResponebShareUpd.getFromUserId());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

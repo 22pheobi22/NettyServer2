@@ -98,6 +98,11 @@ public abstract class Packet extends PacketHead{
 
 	/** 在控制台打印消息*/
 	public void printPacket(Boolean consoleFlag, String consoleHead, Boolean consoleLogFlag, String fileLogPath) {
+		if (this.getPacketType() == PacketType.ClientHeartBeat
+				|| this.getPacketType() == PacketType.ServerHearBeat) {
+			return;
+		}
+		
 		String str = "============================================\r\n"
 				+ consoleHead + "\r\n" + this.toString()
 				+ "============================================\r\n";

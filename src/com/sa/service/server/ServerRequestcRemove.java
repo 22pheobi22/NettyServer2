@@ -64,6 +64,12 @@ public class ServerRequestcRemove extends Packet {
 			if (ConfManager.getIsCenter()) {
 				/** 转发到中心*/
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				boolean sameServer = ServerDataPool.dataManager.checkSourceAndTargetServer(this.getFromUserId(), this.getToUserId());
+				if(sameServer){
+					//本服務器處理
+					ClientResponecRemove clientResponecRemove = new ClientResponecRemove(this.getPacketHead(), this.getOptions());
+					clientResponecRemove.execPacket();
+				}
 			}else{
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {

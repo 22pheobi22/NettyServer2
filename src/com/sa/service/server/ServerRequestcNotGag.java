@@ -27,6 +27,8 @@ import com.sa.base.element.Room;
 import com.sa.net.Packet;
 import com.sa.net.PacketType;
 import com.sa.service.client.ClientMsgReceipt;
+import com.sa.service.client.ClientResponecGag;
+import com.sa.service.client.ClientResponecNotGag;
 import com.sa.service.permission.Permission;
 import com.sa.util.Constant;
 
@@ -43,13 +45,16 @@ public class ServerRequestcNotGag extends Packet {
 		/** 校验用户角色 */
 		Set<String> checkRoleSet = new HashSet(){{add(Constant.ROLE_ASSISTANT);}};
 		Map<String, Object> result = Permission.INSTANCE.checkUserRole(this.getRoomId(), this.getFromUserId(), checkRoleSet);
+		
+		/** 实例化消息回执 并 赋值 并 执行 */
+		new ClientMsgReceipt(this.getPacketHead(), result).execPacket();
+		
 		/** 校验成功 */
 		if (0 == ((Integer) result.get("code"))) {
 			if(!ConfManager.getIsCenter()){
 				String[] roomIds = this.getRoomId().split(",");
 				if (null != roomIds && roomIds.length > 0) {
 					for (String rId : roomIds) {
-						//this.setRoomId(rId);
 						if (null == this.getToUserId() || "".equals(this.getToUserId())) {
 							all(rId);
 						} else {
@@ -60,10 +65,10 @@ public class ServerRequestcNotGag extends Packet {
 			}else{
 				/** 转发到中心 */
 				Manager.INSTANCE.sendPacketToCenter(this, Constant.CONSOLE_CODE_TS);
+				ClientResponecNotGag cr = new ClientResponecNotGag(this.getPacketHead());
+				cr.execPacket();
 			}
 		}
-		/** 实例化消息回执 并 赋值 并 执行 */
-		new ClientMsgReceipt(this.getPacketHead(), result).execPacket();
 	}
 
 	private void one(String userId,String roomId) {
@@ -81,7 +86,6 @@ public class ServerRequestcNotGag extends Packet {
 			cm.setToUserId(userId);
 			cm.setRoomId(roomId);
 			cm.execPacket();
-			/** 如果有中心 并 目标IP不是中心IP */
 		}
 	}
 

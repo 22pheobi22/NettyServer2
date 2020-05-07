@@ -14,8 +14,6 @@
  */
 package com.sa.service.client;
 
-import java.util.HashSet;
-
 import com.sa.base.Manager;
 import com.sa.base.ServerDataPool;
 import com.sa.base.ServerManager;
@@ -31,8 +29,8 @@ public class CUniqueLogon extends Packet {
 	
 	@Override
 	public void execPacket() {
+		System.err.println("服务收到CUniqueLogon："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
 		//普通用戶登錄後收到的消息有兩種情況，1.首登；2.重登
-
 		ChannelHandlerContext ctx =ServerDataPool.USER_CHANNEL_MAP.get(this.getFromUserId());
 		//2.重登-- 原通道發註銷回執 新通道發登陸成功下行
 		if("10098".equals(this.getStatus().toString())){
@@ -48,9 +46,11 @@ public class CUniqueLogon extends Packet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+			System.err.println("服务发送重登下行："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
 			//2.2注銷用戶通道信息
 			ServerManager.INSTANCE.ungisterUserContext(ctx);
+			System.err.println("服务注销上次登录："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 		}else{
 			//1.首登/踢出旧号后重登-- 發登陸成功的登錄下行消息
 			//新server通道
@@ -59,73 +59,16 @@ public class CUniqueLogon extends Packet {
 			if(null==context||null == ce || null == ce.getConnBeginTime()){
 				return;
 			}
+			System.err.println("服务重新注册开始："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 			doLogin(this.getFromUserId(),context,ce.getChannelType());
-			
-			/** 登录信息 下行 处理 */
-			//clientLogin(this, code, msg, role, context);
+			System.err.println("服务重新注册结束："+this.getFromUserId()+"  时间 ："+System.currentTimeMillis());
+
 		}
 	}
 	
 	private void doLogin(String fromUserId, ChannelHandlerContext context, int channelType) {
 		ServerManager.INSTANCE.addOnlineContext(fromUserId, context, channelType);
-	}
-
-				/*@Override
-	public void execPacket() {
-		*//** 如果目标地址是中心地址*//*
-		if (this.getRemoteIp().equals(ConfManager.getCenterIp())) {
-			*//** 从临时缓存中获取发信人通道*//*
-			ChannelHandlerContext context = ServerDataPool.TEMP_CONN_MAP2.get(this.getFromUserId());
-			*//** 删除临时缓存*//*
-			ServerDataPool.TEMP_CONN_MAP2.remove(this.getToUserId());
-			ChannelExtend ce = ServerDataPool.TEMP_CONN_MAP.remove(context);
-			*//** 如果状态为0*//*
-			if (this.getStatus() ==0) {
-				*//** 获取用户角色*//*
-				HashSet<String> userRole = toRole((String) this.getOption(2));
-				*//** 用户注册*//*
-				ServerManager.INSTANCE.addOnlineContext(this.getRoomId(),
-						this.getFromUserId(), (String) this.getOption(3),
-						(String) this.getOption(4), userRole,
-						ConfManager.getTalkEnable(), context, ce.getChannelType());
-				*//** 实例化房间用户列表 并 赋值 并 执行*//*
-				ClientResponebRoomUser crru = new ClientResponebRoomUser(this.getPacketHead());
-				crru.setRemoteIp(this.getRemoteIp());
-				crru.setOption(11, "{\"id\":\""+this.getFromUserId()+"\",\"name\":\""+this.getOption(3)+"\",\"icon\":\""+this.getOption(4)+"\",\"role\":[\""+this.getOption(2)+"\"]}");
-
-				crru.execPacket();
-			}
-			*//** 实例化登录信息 下行*//*
-			ClientLogin cl = new ClientLogin(this.getPacketHead(), this.getOptions());
-			try {
-				*//** 发消息给发信人*//*
-				ServerManager.INSTANCE.sendPacketTo(cl, context, Constant.CONSOLE_CODE_S);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}*/
-
-	private HashSet<String> toRole(String role) {
-		HashSet<String> userRole = new HashSet<String>();
-
-		if ("1".equals(role)) {
-			userRole.add(Constant.ROLE_TEACHER);
-		} else if ("2".equals(role)) {
-			userRole.add(Constant.ROLE_ASSISTANT);
-		} else if ("3".equals(role)) {
-			userRole.add(Constant.ROLE_STUDENT);
-		} else if ("4".equals(role)) {
-			userRole.add(Constant.ROLE_AUDIENCE);
-		} else if ("5".equals(role)) {
-			
-		} else if ("0".equals(role)) {
-			userRole.add(Constant.ROLE_PARENT_TEACHER);
-		} else {
-			userRole.add(role);
-		}
-
-		return userRole;
 	}
 
 	@Override
