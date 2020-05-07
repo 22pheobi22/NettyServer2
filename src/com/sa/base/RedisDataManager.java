@@ -1065,9 +1065,9 @@ public class RedisDataManager {
 		return serverList;
 	}
 
-/*	public String getCenterMasterAddress() {
+	public String getCenterMasterAddress() {
 		return jedisUtil.getHash(CENTER_MASTER_SLAVE_INFO, MASTER);
-	}*/
+	}
 	
 	/**
 	 * 获取系统管理员
